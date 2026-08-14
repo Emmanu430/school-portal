@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import LogoutButton from "@/components/LogoutButton";
+import Link from "next/dist/client/link";
 
 export default async function AdminDashboard() {
   const session = await auth();
@@ -14,6 +15,9 @@ export default async function AdminDashboard() {
       <h1 className="text-3xl font-bold text-black dark:text-white">Admin Dashboard</h1>
       <p className="text-zinc-600 dark:text-zinc-400">Welcome, {session.user?.name}</p>
       <LogoutButton />
+      <Link href="/dashboard/admin/students" className="underline text-blue-600 dark:text-blue-400">
+  Manage Students
+</Link>
     </main>
   );
 }
