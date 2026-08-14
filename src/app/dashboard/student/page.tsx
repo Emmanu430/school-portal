@@ -1,0 +1,19 @@
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
+import LogoutButton from "@/components/LogoutButton";
+
+export default async function StudentDashboard() {
+  const session = await auth();
+
+  if (!session || session.user?.role !== "STUDENT") {
+    redirect("/login");
+  }
+
+  return (
+    <main className="flex min-h-screen flex-col items-center justify-center gap-4 bg-white dark:bg-black">
+      <h1 className="text-3xl font-bold text-black dark:text-white">Student Dashboard</h1>
+      <p className="text-zinc-600 dark:text-zinc-400">Welcome, {session.user?.name}</p>
+      <LogoutButton />
+    </main>
+  );
+}

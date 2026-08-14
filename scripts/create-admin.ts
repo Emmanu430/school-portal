@@ -3,20 +3,25 @@ import bcrypt from "bcryptjs";
 import { prisma } from "../src/lib/prisma";
 
 async function main() {
-    const hashedPassword = await bcrypt.hash("admin123", 10);
+  const users = [
+    { name: "Mr. Teacher", email: "teacher@school.com", password: "teacher123", role: "TEACHER" as const },
+    { name: "Test Student", email: "student@school.com", password: "student123", role: "STUDENT" as const },
+  ];
 
-    const admin = await prisma.user.create({
-        data: {
-        name: "School Admin",
-        email: "admin@school.com",
+  for (const u of users) {
+    const hashedPassword = await bcrypt.hash(u.password, 10);
+    const created = await prisma.user.create({
+      data: {
+        name: u.name,
+        email: u.email,
         password: hashedPassword,
-        role: "ADMIN",
-        },
+        role: u.role,
+      },
     });
-
-    console.log("Created admin user:", admin);
+    console.log("Created:", created.email, created.role);
+  }
 }
 
 main()
-    .catch((e) => console.error(e))
-    .finally(() => process.exit());
+  .catch((e) => console.error(e))
+  .finally(() => process.exit());
