@@ -1,11 +1,12 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 
 export default async function StudentDashboard() {
     const session = await auth();
 
-    if (!session || session.user?.role !== "STUDENT") {
+    if (!session || (session.user?.role !== "ADMIN" && session.user?.role !== "TEACHER")) {
         redirect("/login");
     }
 

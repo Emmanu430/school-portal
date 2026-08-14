@@ -37,11 +37,7 @@ import LogoutButton from "@/components/LogoutButton";
             </Link>
         )}
 
-        {role === "STUDENT" && (
-            <Link href="/students" className="text-black dark:text-white hover:underline">
-            All Students
-            </Link>
-        )}
+        
         {role === "ADMIN" && (
             <Link href="/dashboard/admin/teachers" className="text-black dark:text-white hover:underline">
                 Manage Teachers

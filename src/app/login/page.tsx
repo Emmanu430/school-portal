@@ -4,6 +4,7 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react";
+import Link from "next/link";
 
 export default function LoginPage() {
     const [showPassword, setShowPassword] = useState(false);
@@ -72,6 +73,12 @@ export default function LoginPage() {
             >
             Log In
             </button>
+            <p className="text-sm text-center text-zinc-600 dark:text-zinc-400">
+                Don&apos;t have an account?{" "}
+                <Link href="/register" className="underline">
+                    Register
+                </Link>
+            </p>
         </form>
         </main>
     );
