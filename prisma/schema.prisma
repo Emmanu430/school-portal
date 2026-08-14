@@ -36,4 +36,16 @@ model User {
   role      Role     @default(STUDENT)
   createdAt DateTime @default(now())
   student   Student?
+  teacher   Teacher?
+}
+
+model Teacher {
+  id        Int      @id @default(autoincrement())
+  name      String
+  subject   String
+  email     String   @unique
+  createdAt DateTime @default(now())
+
+  userId    Int?     @unique
+  user      User?    @relation(fields: [userId], references: [id])
 }

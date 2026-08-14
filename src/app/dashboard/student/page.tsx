@@ -1,7 +1,6 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import LogoutButton from "@/components/LogoutButton";
 
 export default async function StudentDashboard() {
     const session = await auth();
@@ -30,7 +29,6 @@ export default async function StudentDashboard() {
             </p>
         )}
 
-        <LogoutButton />
         </main>
     );
 }
