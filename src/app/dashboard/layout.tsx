@@ -43,6 +43,11 @@ import LogoutButton from "@/components/LogoutButton";
                 Manage Teachers
             </Link>
             )}
+            {role === "TEACHER" && (
+                <Link href="/dashboard/teacher/grades" className="text-black dark:text-white hover:underline">
+                    Grades
+                </Link>
+                )}
         <div className="mt-auto">
             <LogoutButton />
         </div>

@@ -9,7 +9,7 @@
     availableUsers,
     action,
     }: {
-    student: { name: string; grade: string; email: string; userId: number | null };
+    student: { name: string; className: string; email: string; userId: number | null };
     availableUsers: UserOption[];
     action: (formData: FormData) => void;
     }) {
@@ -30,15 +30,20 @@
         <input
             type="text"
             name="name"
-            defaultValue={student.name}
-            className="rounded border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-black dark:text-white"
+            defaultValue={isLinked ? linkedUser!.name : student.name}
+            readOnly={isLinked}
+            className={`rounded border px-3 py-2 ${
+                isLinked
+                ? "border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 cursor-not-allowed"
+                : "border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-black dark:text-white"
+            }`}
             required
-        />
+            />
 
         <input
             type="text"
-            name="grade"
-            defaultValue={student.grade}
+            name="className"
+            defaultValue={student.className}
             className="rounded border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-black dark:text-white"
             required
         />

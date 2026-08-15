@@ -1,6 +1,6 @@
-import { auth } from "@/auth";
-import { redirect } from "next/navigation";
-import { prisma } from "@/lib/prisma";
+    import { auth } from "@/auth";
+    import { redirect } from "next/navigation";
+    import { prisma } from "@/lib/prisma";
 
     export default async function NewStudentPage() {
     const session = await auth();
@@ -13,11 +13,11 @@ import { prisma } from "@/lib/prisma";
         "use server";
 
         const name = formData.get("name") as string;
-        const grade = formData.get("grade") as string;
+        const className = formData.get("className") as string;
         const email = formData.get("email") as string;
 
         await prisma.student.create({
-        data: { name, grade, email },
+        data: { name, className, email },
         });
 
         redirect("/dashboard/admin/students");
@@ -41,8 +41,8 @@ import { prisma } from "@/lib/prisma";
 
             <input
             type="text"
-            name="grade"
-            placeholder="Grade (e.g. SS2)"
+            name="className"
+            placeholder="Class (e.g. SS2)"
             className="rounded border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-black dark:text-white placeholder:text-zinc-400"
             required
             />

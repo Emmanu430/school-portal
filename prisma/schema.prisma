@@ -21,7 +21,8 @@ enum Role {
 model Student {
   id        Int      @id @default(autoincrement())
   name      String
-  grade     String
+  className     String
+  grades    Grade[]
   email     String   @unique
   createdAt DateTime @default(now())
     userId    Int?     @unique
@@ -42,10 +43,25 @@ model User {
 model Teacher {
   id        Int      @id @default(autoincrement())
   name      String
+  grades    Grade[]
   subject   String
   email     String   @unique
   createdAt DateTime @default(now())
 
   userId    Int?     @unique
   user      User?    @relation(fields: [userId], references: [id])
+}
+
+model Grade {
+  id        Int      @id @default(autoincrement())
+  subject   String
+  score     Int
+  term      String
+  createdAt DateTime @default(now())
+
+  studentId Int
+  student   Student  @relation(fields: [studentId], references: [id])
+
+  teacherId Int?
+  teacher   Teacher? @relation(fields: [teacherId], references: [id])
 }

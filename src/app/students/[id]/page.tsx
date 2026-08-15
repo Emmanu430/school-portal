@@ -30,7 +30,7 @@ export default async function StudentProfile({
   return (
     <main className="flex min-h-screen flex-col items-center justify-center gap-2 bg-white dark:bg-black">
       <h1 className="text-3xl font-bold text-black dark:text-white">{student.name}</h1>
-      <p className="text-lg text-zinc-600 dark:text-zinc-400">Grade: {student.grade}</p>
+      <p className="text-lg text-zinc-600 dark:text-zinc-400">Class: {student.className}</p>
       <p className="text-sm text-zinc-400 dark:text-zinc-500">{student.email}</p>
     </main>
   );

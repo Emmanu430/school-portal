@@ -32,25 +32,27 @@
     async function updateStudent(formData: FormData) {
         "use server";
 
-        const name = formData.get("name") as string;
-        const grade = formData.get("grade") as string;
+        const nameInput = formData.get("name") as string;
+        const className = formData.get("className") as string;
         const emailInput = formData.get("email") as string;
         const userIdRaw = formData.get("userId") as string;
 
         const userId = userIdRaw === "" ? null : Number(userIdRaw);
 
+        let finalName = nameInput;
         let finalEmail = emailInput;
 
         if (userId) {
         const linkedUser = await prisma.user.findUnique({ where: { id: userId } });
         if (linkedUser) {
+            finalName = linkedUser.name;
             finalEmail = linkedUser.email;
         }
         }
 
         await prisma.student.update({
         where: { id: Number(id) },
-        data: { name, grade, email: finalEmail, userId },
+        data: { name: finalName, className, email: finalEmail, userId },
         });
 
         redirect("/dashboard/admin/students");

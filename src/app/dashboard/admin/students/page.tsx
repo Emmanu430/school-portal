@@ -1,9 +1,9 @@
-import { auth } from "@/auth";
-import { redirect } from "next/navigation";
-import { prisma } from "@/lib/prisma";
-import Link from "next/link";
+    import { auth } from "@/auth";
+    import { redirect } from "next/navigation";
+    import { prisma } from "@/lib/prisma";
+    import Link from "next/link";
 
-export default async function AdminStudentsPage() {
+    export default async function AdminStudentsPage() {
     const session = await auth();
 
     if (!session || session.user?.role !== "ADMIN") {
@@ -29,7 +29,7 @@ export default async function AdminStudentsPage() {
             <thead>
             <tr className="border-b border-zinc-200 dark:border-zinc-800 text-left">
                 <th className="p-2 text-black dark:text-white">Name</th>
-                <th className="p-2 text-black dark:text-white">Grade</th>
+                <th className="p-2 text-black dark:text-white">Class</th>
                 <th className="p-2 text-black dark:text-white">Email</th>
             </tr>
             </thead>
@@ -37,9 +37,14 @@ export default async function AdminStudentsPage() {
             {students.map((student) => (
                 <tr key={student.id} className="border-b border-zinc-100 dark:border-zinc-900">
                 <td className="p-2 text-black dark:text-white">
-                    <Link href={`/dashboard/admin/students/${student.id}/edit`} className="underline hover:text-zinc-600 dark:hover:text-zinc-300">{student.name}</Link>
+                    <Link
+                    href={`/dashboard/admin/students/${student.id}/edit`}
+                    className="underline hover:text-zinc-600 dark:hover:text-zinc-300"
+                    >
+                    {student.name}
+                    </Link>
                 </td>
-                <td className="p-2 text-zinc-600 dark:text-zinc-400">{student.grade}</td>
+                <td className="p-2 text-zinc-600 dark:text-zinc-400">{student.className}</td>
                 <td className="p-2 text-zinc-600 dark:text-zinc-400">{student.email}</td>
                 </tr>
             ))}
