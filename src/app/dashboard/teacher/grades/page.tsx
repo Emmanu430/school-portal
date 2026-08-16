@@ -39,7 +39,14 @@
             {grades.map((grade) => (
                 <tr key={grade.id} className="border-b border-border">
                 <td className="p-2 text-foreground">{grade.student.name}</td>
-                <td className="p-2 text-muted-foreground">{grade.subject}</td>
+                <td className="p-2 text-muted-foreground">
+                    <Link
+                    href={`/dashboard/teacher/grades/${grade.id}/edit`}
+                    className="underline hover:text-foreground"
+                    >
+                    {grade.subject}
+                    </Link>
+                </td>
                 <td className="p-2 text-muted-foreground">{grade.term}</td>
                 <td className="p-2 text-muted-foreground">{grade.score}</td>
                 </tr>
