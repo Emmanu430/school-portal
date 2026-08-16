@@ -42,6 +42,11 @@
                 Manage Teachers
             </Link>
             )}
+            {role === "ADMIN" && (
+                <Link href="/dashboard/admin/users/new" className="text-foreground hover:underline">
+                    Create Staff Account
+                </Link>
+                )}
 
             {role === "TEACHER" && (
             <Link href="/dashboard/teacher/grades" className="text-foreground hover:underline">
