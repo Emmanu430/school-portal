@@ -33,9 +33,24 @@
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        await prisma.user.create({
+        const newUser = await prisma.user.create({
         data: { name, email, password: hashedPassword, role: role as "ADMIN" | "TEACHER" | "STUDENT" },
         });
+
+        if (role === "TEACHER") {
+        const subject = formData.get("subject") as string;
+        const assignedClass = formData.get("assignedClass") as string;
+
+        await prisma.teacher.create({
+            data: {
+            name,
+            subject,
+            email,
+            assignedClass: assignedClass === "" ? null : assignedClass,
+            userId: newUser.id,
+            },
+        });
+        }
 
         redirect("/dashboard/admin/users/new?success=1");
     }
@@ -45,9 +60,9 @@
         <div className="flex w-full max-w-sm flex-col gap-4">
             {success && (
             <p className="text-sm text-center text-primary">
-                Account created. Now link it to a teacher record from{" "} 
-                <Link href="/dashboard/admin/teachers" className="text-primary underline">
-                    Manage Teachers
+                Account created. Now link it to a teacher record from{" "}
+                <Link href="/dashboard/admin/teachers" className="underline">
+                Manage Teachers
                 </Link>
                 .
             </p>

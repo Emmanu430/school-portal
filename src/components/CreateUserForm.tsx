@@ -9,6 +9,7 @@
     action: (formData: FormData) => void;
     }) {
     const [showPassword, setShowPassword] = useState(false);
+    const [role, setRole] = useState("TEACHER");
 
     return (
         <form
@@ -53,13 +54,32 @@
 
         <select
             name="role"
-            defaultValue="TEACHER"
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
             className="rounded border border-border bg-input px-3 py-2 text-foreground"
             required
         >
             <option value="TEACHER">Teacher</option>
             <option value="ADMIN">Admin</option>
         </select>
+
+        {role === "TEACHER" && (
+            <>
+            <input
+                type="text"
+                name="subject"
+                placeholder="Subject (e.g. Mathematics)"
+                className="rounded border border-border bg-input px-3 py-2 text-foreground placeholder:text-muted-foreground"
+                required
+            />
+            <input
+                type="text"
+                name="assignedClass"
+                placeholder="Assigned Class (e.g. SS2) — optional"
+                className="rounded border border-border bg-input px-3 py-2 text-foreground placeholder:text-muted-foreground"
+            />
+            </>
+        )}
 
         <button
             type="submit"
