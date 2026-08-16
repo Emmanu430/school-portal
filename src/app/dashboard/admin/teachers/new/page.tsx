@@ -15,9 +15,15 @@
         const name = formData.get("name") as string;
         const subject = formData.get("subject") as string;
         const email = formData.get("email") as string;
+        const assignedClass = formData.get("assignedClass") as string;
 
         await prisma.teacher.create({
-        data: { name, subject, email },
+        data: {
+            name,
+            subject,
+            email,
+            assignedClass: assignedClass === "" ? null : assignedClass,
+        },
         });
 
         redirect("/dashboard/admin/teachers");
@@ -53,6 +59,13 @@
             placeholder="Email"
             className="rounded border border-border bg-input px-3 py-2 text-foreground placeholder:text-muted-foreground"
             required
+            />
+
+            <input
+            type="text"
+            name="assignedClass"
+            placeholder="Assigned Class (e.g. SS2) — optional"
+            className="rounded border border-border bg-input px-3 py-2 text-foreground placeholder:text-muted-foreground"
             />
 
             <button

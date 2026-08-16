@@ -47,6 +47,7 @@ model Teacher {
   subject   String
   email     String   @unique
   createdAt DateTime @default(now())
+  assignedClass String?
 
   userId    Int?     @unique
   user      User?    @relation(fields: [userId], references: [id])

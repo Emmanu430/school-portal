@@ -9,7 +9,14 @@
         redirect("/login");
     }
 
+    const teacher = await prisma.teacher.findUnique({
+        where: { userId: Number(session.user.id) },
+    });
+
     const students = await prisma.student.findMany({
+        where: teacher?.assignedClass
+        ? { className: teacher.assignedClass }
+        : { id: -1 }, // no class assigned → show nobody, safer than showing everyone
         orderBy: { name: "asc" },
     });
 
@@ -35,6 +42,12 @@
             className="flex w-full max-w-sm flex-col gap-4 rounded-lg border border-border bg-card p-6"
         >
             <h1 className="text-2xl font-bold text-foreground">Add Grade</h1>
+
+            {!teacher?.assignedClass && (
+            <p className="text-sm text-destructive">
+                You have no assigned class yet. Contact an admin.
+            </p>
+            )}
 
             <select
             name="studentId"
