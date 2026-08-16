@@ -3,6 +3,7 @@
     import Link from "next/link";
     import { ThemeToggle } from "@/components/theme-toggle";
     import LogoutButton from "@/components/LogoutButton";
+    import { LayoutDashboard, UserPlus, Users, GraduationCap, ClipboardList } from "lucide-react";
 
     export default async function DashboardLayout({
     children,
@@ -27,29 +28,35 @@
             <ThemeToggle />
             </div>
 
-            <Link href="/dashboard" className="text-foreground hover:underline">
+            <Link href="/dashboard" className="flex items-center gap-2 text-foreground hover:underline">
+            <LayoutDashboard className="h-4 w-4" />
             Dashboard
             </Link>
 
             {role === "ADMIN" && (
-            <Link href="/dashboard/admin/students" className="text-foreground hover:underline">
-                Manage Students
-            </Link>
-            )}
-
-            {role === "ADMIN" && (
-            <Link href="/dashboard/admin/teachers" className="text-foreground hover:underline">
-                Manage Teachers
-            </Link>
-            )}
-            {role === "ADMIN" && (
-                <Link href="/dashboard/admin/users/new" className="text-foreground hover:underline">
-                    Create Staff Account
+            <>
+                <Link href="/dashboard/admin/students/new" className="flex items-center gap-2 text-foreground hover:underline">
+                <UserPlus className="h-4 w-4" />
+                Add Student
                 </Link>
-                )}
+                <Link href="/dashboard/admin/students" className="flex items-center gap-2 text-foreground hover:underline">
+                <Users className="h-4 w-4" />
+                Manage Students
+                </Link>
+                <Link href="/dashboard/admin/users/new" className="flex items-center gap-2 text-foreground hover:underline">
+                <UserPlus className="h-4 w-4" />
+                Add Teacher
+                </Link>
+                <Link href="/dashboard/admin/teachers" className="flex items-center gap-2 text-foreground hover:underline">
+                <GraduationCap className="h-4 w-4" />
+                Manage Teachers
+                </Link>
+            </>
+            )}
 
             {role === "TEACHER" && (
-            <Link href="/dashboard/teacher/grades" className="text-foreground hover:underline">
+            <Link href="/dashboard/teacher/grades" className="flex items-center gap-2 text-foreground hover:underline">
+                <ClipboardList className="h-4 w-4" />
                 Grades
             </Link>
             )}

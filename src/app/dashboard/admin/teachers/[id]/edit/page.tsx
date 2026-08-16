@@ -1,6 +1,7 @@
     import { auth } from "@/auth";
     import { redirect, notFound } from "next/navigation";
     import { prisma } from "@/lib/prisma";
+    import bcrypt from "bcryptjs";
     import EditTeacherForm from "@/components/EditTeacherForm";
 
     export default async function EditTeacherPage({
@@ -29,41 +30,50 @@
         },
     });
 
-    async function updateTeacher(formData: FormData) {
-        "use server";
+async function updateTeacher(formData: FormData) {
+    "use server";
 
-        const nameInput = formData.get("name") as string;
-        const subject = formData.get("subject") as string;
-        const emailInput = formData.get("email") as string;
-        const assignedClass = formData.get("assignedClass") as string;
-        const userIdRaw = formData.get("userId") as string;
+    const nameInput = formData.get("name") as string;
+    const subject = formData.get("subject") as string;
+    const emailInput = formData.get("email") as string;
+    const assignedClass = formData.get("assignedClass") as string;
+    const userIdRaw = formData.get("userId") as string;
+    const newPassword = formData.get("newPassword") as string;
 
-        const userId = userIdRaw === "" ? null : Number(userIdRaw);
+    const userId = userIdRaw === "" ? null : Number(userIdRaw);
 
-        let finalName = nameInput;
-        let finalEmail = emailInput;
+    let finalName = nameInput;
+    let finalEmail = emailInput;
 
-        if (userId) {
+    if (userId) {
         const linkedUser = await prisma.user.findUnique({ where: { id: userId } });
         if (linkedUser) {
-            finalName = linkedUser.name;
-            finalEmail = linkedUser.email;
-        }
+        finalName = linkedUser.name;
+        finalEmail = linkedUser.email;
         }
 
-        await prisma.teacher.update({
+        if (newPassword && newPassword.length >= 6) {
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        await prisma.user.update({
+            where: { id: userId },
+            data: { password: hashedPassword },
+        });
+        }
+    }
+
+    await prisma.teacher.update({
         where: { id: Number(id) },
         data: {
-            name: finalName,
-            subject,
-            email: finalEmail,
-            assignedClass: assignedClass === "" ? null : assignedClass,
-            userId,
+        name: finalName,
+        subject,
+        email: finalEmail,
+        assignedClass: assignedClass === "" ? null : assignedClass,
+        userId,
         },
-        });
+    });
 
-        redirect("/dashboard/admin/teachers");
-    }
+    redirect("/dashboard/admin/teachers");
+}
 
     async function deleteTeacher() {
         "use server";
