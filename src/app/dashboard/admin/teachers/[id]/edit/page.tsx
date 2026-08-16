@@ -47,19 +47,19 @@
     }
 
     return (
-        <main className="flex min-h-screen items-center justify-center bg-white dark:bg-black">
+        <main className="flex min-h-screen items-center justify-center bg-background">
         <div className="flex w-full max-w-sm flex-col gap-4">
             <form
             action={updateTeacher}
-            className="flex flex-col gap-4 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-6"
+            className="flex flex-col gap-4 rounded-lg border border-border bg-card p-6"
             >
-            <h1 className="text-2xl font-bold text-black dark:text-white">Edit Teacher</h1>
+            <h1 className="text-2xl font-bold text-foreground">Edit Teacher</h1>
 
             <input
                 type="text"
                 name="name"
                 defaultValue={teacher.name}
-                className="rounded border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-black dark:text-white"
+                className="rounded border border-border bg-input px-3 py-2 text-foreground"
                 required
             />
 
@@ -67,7 +67,7 @@
                 type="text"
                 name="subject"
                 defaultValue={teacher.subject}
-                className="rounded border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-black dark:text-white"
+                className="rounded border border-border bg-input px-3 py-2 text-foreground"
                 required
             />
 
@@ -75,13 +75,13 @@
                 type="email"
                 name="email"
                 defaultValue={teacher.email}
-                className="rounded border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-black dark:text-white"
+                className="rounded border border-border bg-input px-3 py-2 text-foreground"
                 required
             />
 
             <button
                 type="submit"
-                className="rounded bg-black dark:bg-white px-4 py-2 text-white dark:text-black hover:bg-zinc-800 dark:hover:bg-zinc-200"
+                className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
             >
                 Save Changes
             </button>
@@ -90,7 +90,7 @@
             <form action={deleteTeacher}>
             <button
                 type="submit"
-                className="w-full rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700"
+                className="w-full rounded-md bg-destructive px-4 py-2 text-sm font-medium text-destructive-foreground hover:bg-destructive/90"
             >
                 Delete Teacher
             </button>

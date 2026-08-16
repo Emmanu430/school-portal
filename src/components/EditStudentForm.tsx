@@ -23,9 +23,9 @@
     return (
         <form
         action={action}
-        className="flex flex-col gap-4 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-6"
+        className="flex flex-col gap-4 rounded-lg border border-border bg-card p-6"
         >
-        <h1 className="text-2xl font-bold text-black dark:text-white">Edit Student</h1>
+        <h1 className="text-2xl font-bold text-foreground">Edit Student</h1>
 
         <input
             type="text"
@@ -33,18 +33,18 @@
             defaultValue={isLinked ? linkedUser!.name : student.name}
             readOnly={isLinked}
             className={`rounded border px-3 py-2 ${
-                isLinked
-                ? "border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 cursor-not-allowed"
-                : "border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-black dark:text-white"
+            isLinked
+                ? "border-border bg-muted text-muted-foreground cursor-not-allowed"
+                : "border-border bg-input text-foreground"
             }`}
             required
-            />
+        />
 
         <input
             type="text"
             name="className"
             defaultValue={student.className}
-            className="rounded border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-black dark:text-white"
+            className="rounded border border-border bg-input px-3 py-2 text-foreground"
             required
         />
 
@@ -55,25 +55,25 @@
             readOnly={isLinked}
             className={`rounded border px-3 py-2 ${
             isLinked
-                ? "border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 cursor-not-allowed"
-                : "border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-black dark:text-white"
+                ? "border-border bg-muted text-muted-foreground cursor-not-allowed"
+                : "border-border bg-input text-foreground"
             }`}
             required
         />
         {isLinked && (
-            <p className="text-xs text-zinc-500 dark:text-zinc-400 -mt-2">
+            <p className="text-xs text-muted-foreground -mt-2">
             Email is synced from the linked account and can&apos;t be edited here.
             </p>
         )}
 
-        <label className="text-sm text-zinc-600 dark:text-zinc-400">
+        <label className="text-sm text-muted-foreground">
             Linked Account
         </label>
         <select
             name="userId"
             value={selectedUserId}
             onChange={(e) => setSelectedUserId(e.target.value)}
-            className="rounded border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-black dark:text-white"
+            className="rounded border border-border bg-input px-3 py-2 text-foreground"
         >
             <option value="">— No linked account —</option>
             {availableUsers.map((user) => (
@@ -85,7 +85,7 @@
 
         <button
             type="submit"
-            className="rounded bg-black dark:bg-white px-4 py-2 text-white dark:text-black hover:bg-zinc-800 dark:hover:bg-zinc-200"
+            className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
         >
             Save Changes
         </button>

@@ -1,12 +1,12 @@
-"use client";
+    "use client";
 
-import { useState } from "react";
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { Eye, EyeOff } from "lucide-react";
-import Link from "next/link";
+    import { useState } from "react";
+    import { signIn } from "next-auth/react";
+    import { useRouter } from "next/navigation";
+    import { Eye, EyeOff } from "lucide-react";
+    import Link from "next/link";
 
-export default function LoginPage() {
+    export default function LoginPage() {
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState("");
     const router = useRouter();
@@ -33,20 +33,20 @@ export default function LoginPage() {
     }
 
     return (
-        <main className="flex min-h-screen items-center justify-center bg-white dark:bg-black">
+        <main className="flex min-h-screen items-center justify-center bg-background">
         <form
             onSubmit={handleSubmit}
-            className="flex w-full max-w-sm flex-col gap-4 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-6"
+            className="flex w-full max-w-sm flex-col gap-4 rounded-lg border border-border bg-card p-6"
         >
-            <h1 className="text-2xl font-bold text-black dark:text-white">Login</h1>
+            <h1 className="text-2xl font-bold text-foreground">Login</h1>
 
-            {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
+            {error && <p className="text-sm text-destructive">{error}</p>}
 
             <input
             type="email"
             name="email"
             placeholder="Email"
-            className="rounded border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-black dark:text-white placeholder:text-zinc-400 [color-scheme:light] dark:[color-scheme:dark]"
+            className="rounded border border-border bg-input px-3 py-2 text-foreground placeholder:text-muted-foreground [color-scheme:light] dark:[color-scheme:dark]"
             required
             />
 
@@ -55,13 +55,13 @@ export default function LoginPage() {
                 type={showPassword ? "text" : "password"}
                 name="password"
                 placeholder="Password"
-                className="w-full rounded border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 pr-10 text-black dark:text-white placeholder:text-zinc-400 [color-scheme:light] dark:[color-scheme:dark]"
+                className="w-full rounded border border-border bg-input px-3 py-2 pr-10 text-foreground placeholder:text-muted-foreground [color-scheme:light] dark:[color-scheme:dark]"
                 required
             />
             <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 dark:text-zinc-400"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
             >
                 {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
@@ -69,15 +69,15 @@ export default function LoginPage() {
 
             <button
             type="submit"
-            className="rounded bg-black dark:bg-white px-4 py-2 text-white dark:text-black hover:bg-zinc-800 dark:hover:bg-zinc-200"
+            className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
             >
             Log In
             </button>
-            <p className="text-sm text-center text-zinc-600 dark:text-zinc-400">
-                Don&apos;t have an account?{" "}
-                <Link href="/register" className="underline">
-                    Register
-                </Link>
+            <p className="text-sm text-center text-muted-foreground">
+            Don&apos;t have an account?{" "}
+            <Link href="/register" className="underline">
+                Register
+            </Link>
             </p>
         </form>
         </main>

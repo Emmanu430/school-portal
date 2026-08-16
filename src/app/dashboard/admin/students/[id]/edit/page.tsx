@@ -69,7 +69,7 @@
     }
 
     return (
-        <main className="flex min-h-screen items-center justify-center bg-white dark:bg-black">
+        <main className="flex min-h-screen items-center justify-center bg-background">
         <div className="flex w-full max-w-sm flex-col gap-4">
             <EditStudentForm
             student={student}
@@ -80,7 +80,7 @@
             <form action={deleteStudent}>
             <button
                 type="submit"
-                className="w-full rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700"
+                className="w-full rounded-md bg-destructive px-4 py-2 text-sm font-medium text-destructive-foreground hover:bg-destructive/90"
             >
                 Delete Student
             </button>

@@ -31,7 +31,7 @@
     }
 
     return (
-        <main className="flex min-h-screen items-center justify-center bg-white dark:bg-black">
+        <main className="flex min-h-screen items-center justify-center bg-background">
         <RegisterForm action={registerUser} />
         </main>
     );
