@@ -3,7 +3,6 @@
     import bcrypt from "bcryptjs";
     import { prisma } from "@/lib/prisma";
     import CreateUserForm from "@/components/CreateUserForm";
-    import Link from "next/link";
 
     export default async function NewUserPage({
     searchParams,
@@ -57,18 +56,7 @@
 
     return (
         <main className="flex min-h-screen items-center justify-center bg-background">
-        <div className="flex w-full max-w-sm flex-col gap-4">
-            {success && (
-            <p className="text-sm text-center text-primary">
-                Account created. Now link it to a teacher record from{" "}
-                <Link href="/dashboard/admin/teachers" className="underline">
-                Manage Teachers
-                </Link>
-                .
-            </p>
-            )}
-            <CreateUserForm action={createUser} />
-        </div>
+        <CreateUserForm action={createUser} success={success === "1"} />
         </main>
     );
 }

@@ -5,8 +5,10 @@
 
     export default function CreateUserForm({
     action,
+    success,
     }: {
     action: (formData: FormData) => void;
+    success?: boolean;
     }) {
     const [showPassword, setShowPassword] = useState(false);
     const [role, setRole] = useState("TEACHER");
@@ -17,6 +19,12 @@
         className="flex w-full max-w-sm flex-col gap-4 rounded-lg border border-border bg-card p-6"
         >
         <h1 className="text-2xl font-bold text-foreground">Create Staff Account</h1>
+
+        {success && (
+            <p className="text-sm text-primary">
+            Account created. Now link it to a teacher record from Manage Teachers.
+            </p>
+        )}
 
         <input
             type="text"

@@ -1,13 +1,20 @@
     import { auth } from "@/auth";
     import { redirect } from "next/navigation";
     import { prisma } from "@/lib/prisma";
+    import Link from "next/link";
 
-    export default async function NewTeacherPage() {
+    export default async function NewTeacherPage({
+    searchParams,
+    }: {
+    searchParams: Promise<{ error?: string; success?: string }>;
+    }) {
     const session = await auth();
 
     if (!session || session.user?.role !== "ADMIN") {
         redirect("/login");
     }
+
+    const { error, success } = await searchParams;
 
     async function createTeacher(formData: FormData) {
         "use server";
@@ -16,6 +23,11 @@
         const subject = formData.get("subject") as string;
         const email = formData.get("email") as string;
         const assignedClass = formData.get("assignedClass") as string;
+
+        const existing = await prisma.teacher.findUnique({ where: { email } });
+        if (existing) {
+        redirect("/dashboard/admin/teachers/new?error=exists");
+        }
 
         await prisma.teacher.create({
         data: {
@@ -26,7 +38,7 @@
         },
         });
 
-        redirect("/dashboard/admin/teachers");
+        redirect("/dashboard/admin/teachers/new?success=1");
     }
 
     return (
@@ -36,6 +48,21 @@
             className="flex w-full max-w-sm flex-col gap-4 rounded-lg border border-border bg-card p-6"
         >
             <h1 className="text-2xl font-bold text-foreground">Add Teacher</h1>
+
+            {error === "exists" && (
+            <p className="text-sm text-destructive">
+                A teacher with that email already exists.
+            </p>
+            )}
+
+            {success === "1" && (
+            <p className="text-sm text-primary">
+                Teacher created successfully. Add another below, or{" "}
+                <Link href="/dashboard/admin/teachers" className="underline">
+                view the list
+                </Link>.
+            </p>
+            )}
 
             <input
             type="text"

@@ -2,12 +2,14 @@
     import { redirect } from "next/navigation";
     import { prisma } from "@/lib/prisma";
     import Link from "next/link";
-    import { ChevronDown } from "lucide-react";
-    import { X } from "lucide-react";
+    import { ChevronDown, X } from "lucide-react";
+
+    const PAGE_SIZE = 5;
+
     export default async function AdminStudentsPage({
     searchParams,
     }: {
-    searchParams: Promise<{ search?: string; className?: string }>;
+    searchParams: Promise<{ search?: string; className?: string; page?: string }>;
     }) {
     const session = await auth();
 
@@ -15,20 +17,36 @@
         redirect("/login");
     }
 
-    const { search, className } = await searchParams;
+    const { search, className, page } = await searchParams;
+    const currentPage = Number(page) || 1;
+
+    const where = {
+        name: search ? { contains: search, mode: "insensitive" as const } : undefined,
+        className: className ? className : undefined,
+    };
+
+    const totalStudents = await prisma.student.count({ where });
+    const totalPages = Math.ceil(totalStudents / PAGE_SIZE);
 
     const students = await prisma.student.findMany({
-        where: {
-        name: search ? { contains: search, mode: "insensitive" } : undefined,
-        className: className ? className : undefined,
-        },
+        where,
         orderBy: { createdAt: "desc" },
+        skip: (currentPage - 1) * PAGE_SIZE,
+        take: PAGE_SIZE,
     });
 
     const allClasses = await prisma.student.findMany({
         select: { className: true },
         distinct: ["className"],
     });
+
+    function buildPageLink(targetPage: number) {
+        const params = new URLSearchParams();
+        if (search) params.set("search", search);
+        if (className) params.set("className", className);
+        params.set("page", String(targetPage));
+        return `/dashboard/admin/students?${params.toString()}`;
+    }
 
     return (
         <main className="flex min-h-screen flex-col items-center gap-6 py-16 bg-background">
@@ -51,19 +69,19 @@
             />
 
             <div className="relative">
-                <select
-                    name="className"
-                    defaultValue={className ?? ""}
-                    className="appearance-none rounded border border-border bg-input px-3 py-2 pr-8 text-foreground"
-                >
-                    <option value="">All Classes</option>
-                    {allClasses.map((c) => (
-                    <option key={c.className} value={c.className}>
-                        {c.className}
-                    </option>
-                    ))}
-                </select>
-                <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <select
+                name="className"
+                defaultValue={className ?? ""}
+                className="appearance-none rounded border border-border bg-input px-3 py-2 pr-8 text-foreground"
+            >
+                <option value="">All Classes</option>
+                {allClasses.map((c) => (
+                <option key={c.className} value={c.className}>
+                    {c.className}
+                </option>
+                ))}
+            </select>
+            <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             </div>
 
             <button
@@ -73,15 +91,17 @@
             Filter
             </button>
         </form>
-            {(search || className) && (
-                <Link
-                    href="/dashboard/admin/students"
-                    className="flex items-center gap-1 rounded-full border border-border bg-muted px-3 py-1 text-xs text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors"
-                >
-                    <X className="h-3 w-3" />
-                    Clear filters
-                </Link>
-                )}
+
+        {(search || className) && (
+            <Link
+            href="/dashboard/admin/students"
+            className="flex items-center gap-1 rounded-full border border-border bg-muted px-3 py-1 text-xs text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors"
+            >
+            <X className="h-3 w-3" />
+            Clear filters
+            </Link>
+        )}
+
         <table className="w-full max-w-2xl border-collapse">
             <thead>
             <tr className="border-b border-border text-left">
@@ -110,6 +130,30 @@
 
         {students.length === 0 && (
             <p className="text-muted-foreground">No students match your search.</p>
+        )}
+
+        {totalPages > 1 && (
+            <div className="flex items-center gap-4">
+            {currentPage > 1 ? (
+                <Link href={buildPageLink(currentPage - 1)} className="text-sm text-primary underline">
+                Previous
+                </Link>
+            ) : (
+                <span className="text-sm text-muted-foreground">Previous</span>
+            )}
+
+            <span className="text-sm text-muted-foreground">
+                Page {currentPage} of {totalPages}
+            </span>
+
+            {currentPage < totalPages ? (
+                <Link href={buildPageLink(currentPage + 1)} className="text-sm text-primary underline">
+                Next
+                </Link>
+            ) : (
+                <span className="text-sm text-muted-foreground">Next</span>
+            )}
+            </div>
         )}
         </main>
     );
