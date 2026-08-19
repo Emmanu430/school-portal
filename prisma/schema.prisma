@@ -66,3 +66,10 @@ model Grade {
   teacherId Int?
   teacher   Teacher? @relation(fields: [teacherId], references: [id])
 }
+model PasswordResetToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  userId    Int
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}

@@ -74,6 +74,11 @@
             Log In
             </button>
             <p className="text-sm text-center text-muted-foreground">
+                <Link href="/forgot-password" className="underline">
+                    Forgot password?
+                </Link>
+            </p>
+            <p className="text-sm text-center text-muted-foreground">
             Don&apos;t have an account?{" "}
             <Link href="/register" className="underline">
                 Register
