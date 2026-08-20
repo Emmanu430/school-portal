@@ -1,6 +1,7 @@
     import { auth } from "@/auth";
     import { redirect } from "next/navigation";
     import { prisma } from "@/lib/prisma";
+    import ClassSelect from "@/components/ClassSelect";
     import Link from "next/link";
 
     export default async function NewStudentPage({
@@ -16,20 +17,29 @@
 
     const { error, success } = await searchParams;
 
+    const classes = await prisma.class.findMany({ orderBy: { name: "asc" } });
+
     async function createStudent(formData: FormData) {
         "use server";
 
         const name = formData.get("name") as string;
-        const className = formData.get("className") as string;
         const email = formData.get("email") as string;
+        const classIdRaw = formData.get("classId") as string;
+        const classId = classIdRaw ? Number(classIdRaw) : null;
 
         const existing = await prisma.student.findUnique({ where: { email } });
         if (existing) {
         redirect("/dashboard/admin/students/new?error=exists");
         }
 
+        let className = "";
+        if (classId) {
+        const cls = await prisma.class.findUnique({ where: { id: classId } });
+        className = cls?.name ?? "";
+        }
+
         await prisma.student.create({
-        data: { name, className, email },
+        data: { name, className, email, classId },
         });
 
         redirect("/dashboard/admin/students/new?success=1");
@@ -66,13 +76,7 @@
             required
             />
 
-            <input
-            type="text"
-            name="className"
-            placeholder="Class (e.g. SS2)"
-            className="rounded border border-border bg-input px-3 py-2 text-foreground placeholder:text-muted-foreground"
-            required
-            />
+            <ClassSelect classes={classes} />
 
             <input
             type="email"

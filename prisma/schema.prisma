@@ -22,11 +22,16 @@ model Student {
   id        Int      @id @default(autoincrement())
   name      String
   className     String
-  grades    Grade[]
   email     String   @unique
   createdAt DateTime @default(now())
-    userId    Int?     @unique
+
+  userId    Int?     @unique
   user      User?    @relation(fields: [userId], references: [id])
+
+  grades    Grade[]
+
+  classId   Int?
+  class     Class?   @relation(fields: [classId], references: [id])
 }
 
 model User {
@@ -43,14 +48,19 @@ model User {
 model Teacher {
   id        Int      @id @default(autoincrement())
   name      String
-  grades    Grade[]
   subject   String
   email     String   @unique
   createdAt DateTime @default(now())
+
   assignedClass String?
 
   userId    Int?     @unique
   user      User?    @relation(fields: [userId], references: [id])
+
+  grades    Grade[]
+
+  classId       Int?
+  class         Class?   @relation(fields: [classId], references: [id])
 }
 
 model Grade {
@@ -72,4 +82,11 @@ model PasswordResetToken {
   userId    Int
   expiresAt DateTime
   createdAt DateTime @default(now())
+}
+
+model Class {
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
+  students Student[]
+  teachers Teacher[]
 }

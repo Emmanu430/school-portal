@@ -43,6 +43,10 @@
                 <Users className="h-4 w-4" />
                 Manage Students
                 </Link>
+                <Link href="/dashboard/admin/classes" className="flex items-center gap-2 text-foreground hover:underline">
+                    <ClipboardList className="h-4 w-4" />
+                    Manage Classes
+                </Link>
                 <Link href="/dashboard/admin/users/new" className="flex items-center gap-2 text-foreground hover:underline">
                 <UserPlus className="h-4 w-4" />
                 Add Teacher
