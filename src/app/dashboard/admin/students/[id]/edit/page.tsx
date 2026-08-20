@@ -29,15 +29,18 @@
         },
     });
 
+    const classes = await prisma.class.findMany({ orderBy: { name: "asc" } });
+
     async function updateStudent(formData: FormData) {
         "use server";
 
         const nameInput = formData.get("name") as string;
-        const className = formData.get("className") as string;
         const emailInput = formData.get("email") as string;
         const userIdRaw = formData.get("userId") as string;
+        const classIdRaw = formData.get("classId") as string;
 
         const userId = userIdRaw === "" ? null : Number(userIdRaw);
+        const classId = classIdRaw ? Number(classIdRaw) : null;
 
         let finalName = nameInput;
         let finalEmail = emailInput;
@@ -50,9 +53,15 @@
         }
         }
 
+        let className = "";
+        if (classId) {
+        const cls = await prisma.class.findUnique({ where: { id: classId } });
+        className = cls?.name ?? "";
+        }
+
         await prisma.student.update({
         where: { id: Number(id) },
-        data: { name: finalName, className, email: finalEmail, userId },
+        data: { name: finalName, className, email: finalEmail, userId, classId },
         });
 
         redirect("/dashboard/admin/students");
@@ -74,6 +83,7 @@
             <EditStudentForm
             student={student}
             availableUsers={availableUsers}
+            classes={classes}
             action={updateStudent}
             />
 

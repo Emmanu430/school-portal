@@ -35,6 +35,10 @@
 
             {role === "ADMIN" && (
             <>
+                <Link href="/dashboard/admin/students/assign" className="flex items-center gap-2 text-foreground hover:underline">
+                    <UserPlus className="h-4 w-4" />
+                    Assign Class
+                </Link>
                 <Link href="/dashboard/admin/students/new" className="flex items-center gap-2 text-foreground hover:underline">
                 <UserPlus className="h-4 w-4" />
                 Add Student

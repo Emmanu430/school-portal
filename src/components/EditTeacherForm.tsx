@@ -1,20 +1,24 @@
     "use client";
 
     import { useState } from "react";
+    import ClassSelect from "@/components/ClassSelect";
 
     type UserOption = { id: number; name: string; email: string };
+    type ClassOption = { id: number; name: string };
 
-    export default function EditTeacherForm({
-    teacher,
+    export default function EditStudentForm({
+    student,
     availableUsers,
+    classes,
     action,
     }: {
-    teacher: { name: string; subject: string; email: string; assignedClass: string | null; userId: number | null };
+    student: { name: string; className: string; email: string; userId: number | null; classId: number | null };
     availableUsers: UserOption[];
+    classes: ClassOption[];
     action: (formData: FormData) => void;
     }) {
     const [selectedUserId, setSelectedUserId] = useState<string>(
-        teacher.userId ? String(teacher.userId) : ""
+        student.userId ? String(student.userId) : ""
     );
 
     const linkedUser = availableUsers.find((u) => String(u.id) === selectedUserId);
@@ -25,12 +29,12 @@
         action={action}
         className="flex flex-col gap-4 rounded-lg border border-border bg-card p-6"
         >
-        <h1 className="text-2xl font-bold text-foreground">Edit Teacher</h1>
+        <h1 className="text-2xl font-bold text-foreground">Edit Student</h1>
 
         <input
             type="text"
             name="name"
-            defaultValue={isLinked ? linkedUser!.name : teacher.name}
+            defaultValue={isLinked ? linkedUser!.name : student.name}
             readOnly={isLinked}
             className={`rounded border px-3 py-2 ${
             isLinked
@@ -40,18 +44,15 @@
             required
         />
 
-        <input
-            type="text"
-            name="subject"
-            defaultValue={teacher.subject}
-            className="rounded border border-border bg-input px-3 py-2 text-foreground"
-            required
+        <ClassSelect
+            classes={classes}
+            defaultValue={student.classId ? String(student.classId) : ""}
         />
 
         <input
             type="email"
             name="email"
-            defaultValue={isLinked ? linkedUser!.email : teacher.email}
+            defaultValue={isLinked ? linkedUser!.email : student.email}
             readOnly={isLinked}
             className={`rounded border px-3 py-2 ${
             isLinked
@@ -62,20 +63,9 @@
         />
         {isLinked && (
             <p className="text-xs text-muted-foreground -mt-2">
-            Name and email are synced from the linked account.
+            Email is synced from the linked account and can&apos;t be edited here.
             </p>
         )}
-
-        <label className="text-sm text-muted-foreground">
-            Assigned Class
-        </label>
-        <input
-            type="text"
-            name="assignedClass"
-            defaultValue={teacher.assignedClass ?? ""}
-            placeholder="e.g. SS2 (must match student class exactly)"
-            className="rounded border border-border bg-input px-3 py-2 text-foreground placeholder:text-muted-foreground"
-        />
 
         <label className="text-sm text-muted-foreground">
             Linked Account
@@ -84,7 +74,7 @@
             name="userId"
             value={selectedUserId}
             onChange={(e) => setSelectedUserId(e.target.value)}
-            className="rounded border border-border bg-input px-3 py-2 text-foreground"
+            className="rounded border border-border bg-input px-3 py-2 text-foreground [color-scheme:light] dark:[color-scheme:dark]"
         >
             <option value="">— No linked account —</option>
             {availableUsers.map((user) => (
@@ -93,21 +83,6 @@
             </option>
             ))}
         </select>
-
-        {isLinked && (
-            <>
-            <label className="text-sm text-muted-foreground">
-                Reset Password (leave blank to keep current)
-            </label>
-            <input
-                type="text"
-                name="newPassword"
-                placeholder="New temporary password"
-                minLength={6}
-                className="rounded border border-border bg-input px-3 py-2 text-foreground placeholder:text-muted-foreground"
-            />
-            </>
-        )}
 
         <button
             type="submit"
