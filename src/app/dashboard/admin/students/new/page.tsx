@@ -1,8 +1,8 @@
     import { auth } from "@/auth";
     import { redirect } from "next/navigation";
+    import bcrypt from "bcryptjs";
     import { prisma } from "@/lib/prisma";
-    import ClassSelect from "@/components/ClassSelect";
-    import Link from "next/link";
+    import CreateStudentForm from "@/components/CreateStudentForm";
 
     export default async function NewStudentPage({
     searchParams,
@@ -10,13 +10,11 @@
     searchParams: Promise<{ error?: string; success?: string }>;
     }) {
     const session = await auth();
-
     if (!session || session.user?.role !== "ADMIN") {
         redirect("/login");
     }
 
     const { error, success } = await searchParams;
-
     const classes = await prisma.class.findMany({ orderBy: { name: "asc" } });
 
     async function createStudent(formData: FormData) {
@@ -24,11 +22,13 @@
 
         const name = formData.get("name") as string;
         const email = formData.get("email") as string;
+        const password = formData.get("password") as string;
         const classIdRaw = formData.get("classId") as string;
         const classId = classIdRaw ? Number(classIdRaw) : null;
 
-        const existing = await prisma.student.findUnique({ where: { email } });
-        if (existing) {
+        const existingUser = await prisma.user.findUnique({ where: { email } });
+        const existingStudent = await prisma.student.findUnique({ where: { email } });
+        if (existingUser || existingStudent) {
         redirect("/dashboard/admin/students/new?error=exists");
         }
 
@@ -38,8 +38,20 @@
         className = cls?.name ?? "";
         }
 
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const newUser = await prisma.user.create({
+        data: { name, email, password: hashedPassword, role: "STUDENT" },
+        });
+
         await prisma.student.create({
-        data: { name, className, email, classId },
+        data: {
+            name,
+            email,
+            className,
+            classId,
+            userId: newUser.id,
+        },
         });
 
         redirect("/dashboard/admin/students/new?success=1");
@@ -47,52 +59,7 @@
 
     return (
         <main className="flex min-h-screen items-center justify-center bg-background">
-        <form
-            action={createStudent}
-            className="flex w-full max-w-sm flex-col gap-4 rounded-lg border border-border bg-card p-6"
-        >
-            <h1 className="text-2xl font-bold text-foreground">Add Student</h1>
-
-            {error === "exists" && (
-            <p className="text-sm text-destructive">
-                A student with that email already exists.
-            </p>
-            )}
-
-            {success === "1" && (
-            <p className="text-sm text-primary">
-                Student created successfully. Add another below, or{" "}
-                <Link href="/dashboard/admin/students" className="underline">
-                view the list
-                </Link>.
-            </p>
-            )}
-
-            <input
-            type="text"
-            name="name"
-            placeholder="Full Name"
-            className="rounded border border-border bg-input px-3 py-2 text-foreground placeholder:text-muted-foreground"
-            required
-            />
-
-            <ClassSelect classes={classes} />
-
-            <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            className="rounded border border-border bg-input px-3 py-2 text-foreground placeholder:text-muted-foreground"
-            required
-            />
-
-            <button
-            type="submit"
-            className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
-            >
-            Create Student
-            </button>
-        </form>
+        <CreateStudentForm classes={classes} action={createStudent} error={error} success={success} />
         </main>
     );
 }

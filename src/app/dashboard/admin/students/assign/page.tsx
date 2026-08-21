@@ -6,7 +6,7 @@
     export default async function AssignClassPage({
     searchParams,
     }: {
-    searchParams: Promise<{ success?: string }>;
+    searchParams: Promise<{ success?: string; error?: string }>;
     }) {
     const session = await auth();
 
@@ -14,7 +14,7 @@
         redirect("/login");
     }
 
-    const { success } = await searchParams;
+    const { success, error } = await searchParams;
 
     const unassignedUsers = await prisma.user.findMany({
         where: {
@@ -34,6 +34,13 @@
 
         const user = await prisma.user.findUnique({ where: { id: userId } });
         if (!user) return;
+
+        const existingStudent = await prisma.student.findUnique({
+        where: { email: user.email },
+        });
+        if (existingStudent) {
+        redirect("/dashboard/admin/students/assign?error=exists");
+        }
 
         let className = "";
         if (classId) {
@@ -65,6 +72,12 @@
             {success === "1" && (
             <p className="text-sm text-primary">
                 Student assigned successfully.
+            </p>
+            )}
+
+            {error === "exists" && (
+            <p className="text-sm text-destructive">
+                A student record with this email already exists — edit it directly instead.
             </p>
             )}
 
