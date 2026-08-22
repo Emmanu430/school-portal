@@ -1,6 +1,7 @@
     import { auth } from "@/auth";
     import { redirect } from "next/navigation";
     import { prisma } from "@/lib/prisma";
+    import FormSelect from "@/components/FormSelect";
 
     export default async function AttendancePage({
     searchParams,
@@ -103,15 +104,17 @@
                 return (
                     <div key={student.id} className="flex items-center justify-between gap-2">
                     <span className="text-foreground">{student.name}</span>
-                    <select
-                        name={`status-${student.id}`}
-                        defaultValue={existing?.status ?? "PRESENT"}
-                        className="rounded border border-border bg-input px-2 py-1 text-sm text-foreground [color-scheme:light] dark:[color-scheme:dark]"
-                    >
-                        <option value="PRESENT">Present</option>
-                        <option value="ABSENT">Absent</option>
-                        <option value="LATE">Late</option>
-                    </select>
+                    <div className="w-32">
+                        <FormSelect
+                            name={`status-${student.id}`}
+                            defaultValue={existing?.status ?? "PRESENT"}
+                            options={[
+                            { value: "PRESENT", label: "Present" },
+                            { value: "ABSENT", label: "Absent" },
+                            { value: "LATE", label: "Late" },
+                            ]}
+                        />
+                        </div>
                     </div>
                 );
                 })}
