@@ -2,6 +2,7 @@
     import { redirect } from "next/navigation";
     import { prisma } from "@/lib/prisma";
     import Link from "next/link";
+    import ClassSelect from "@/components/ClassSelect";
 
     export default async function NewTeacherPage({
     searchParams,
@@ -15,6 +16,7 @@
     }
 
     const { error, success } = await searchParams;
+    const classes = await prisma.class.findMany({ orderBy: { name: "asc" } });
 
     async function createTeacher(formData: FormData) {
         "use server";
@@ -22,7 +24,8 @@
         const name = formData.get("name") as string;
         const subject = formData.get("subject") as string;
         const email = formData.get("email") as string;
-        const assignedClass = formData.get("assignedClass") as string;
+        const classIdRaw = formData.get("classId") as string;
+        const classId = classIdRaw ? Number(classIdRaw) : null;
 
         const existing = await prisma.teacher.findUnique({ where: { email } });
         if (existing) {
@@ -34,7 +37,7 @@
             name,
             subject,
             email,
-            assignedClass: assignedClass === "" ? null : assignedClass,
+            classId,
         },
         });
 
@@ -88,12 +91,7 @@
             required
             />
 
-            <input
-            type="text"
-            name="assignedClass"
-            placeholder="Assigned Class (e.g. SS2) — optional"
-            className="rounded border border-border bg-input px-3 py-2 text-foreground placeholder:text-muted-foreground"
-            />
+            <ClassSelect classes={classes} />
 
             <button
             type="submit"
