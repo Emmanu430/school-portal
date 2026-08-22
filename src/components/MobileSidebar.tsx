@@ -1,91 +1,43 @@
-    import { auth } from "@/auth";
-    import { redirect } from "next/navigation";
-    import Link from "next/link";
-    import { ThemeToggle } from "@/components/theme-toggle";
-    import LogoutButton from "@/components/LogoutButton";
-    import MobileSidebar from "@/components/MobileSidebar";
-    import { LayoutDashboard, UserPlus, Users, GraduationCap, ClipboardList } from "lucide-react";
+    "use client";
 
-    export default async function DashboardLayout({
-    children,
-    }: {
-    children: React.ReactNode;
-    }) {
-    const session = await auth();
+    import { useState } from "react";
+    import { Menu, X } from "lucide-react";
 
-    if (!session) {
-        redirect("/login");
-    }
-
-    const role = session.user?.role;
+    export default function MobileSidebar({ children }: { children: React.ReactNode }) {
+    const [isOpen, setIsOpen] = useState(false);
 
     return (
-        <div className="flex min-h-screen bg-background lg:flex-row flex-col">
-        <MobileSidebar>
-            <div className="flex items-center justify-between mb-2">
-            <p className="text-xs uppercase text-muted-foreground">
-                {role} Menu
-            </p>
-            <ThemeToggle />
-            </div>
-
-            <Link href="/dashboard" className="flex items-center gap-2 text-foreground hover:underline">
-            <LayoutDashboard className="h-4 w-4" />
-            Dashboard
-            </Link>
-
-            {role === "ADMIN" && (
-            <>
-                <Link href="/dashboard/admin/students/assign" className="flex items-center gap-2 text-foreground hover:underline">
-                <UserPlus className="h-4 w-4" />
-                Assign Class
-                </Link>
-                <Link href="/dashboard/admin/students/new" className="flex items-center gap-2 text-foreground hover:underline">
-                <UserPlus className="h-4 w-4" />
-                Add Student
-                </Link>
-                <Link href="/dashboard/admin/students" className="flex items-center gap-2 text-foreground hover:underline">
-                <Users className="h-4 w-4" />
-                Manage Students
-                </Link>
-                <Link href="/dashboard/admin/classes" className="flex items-center gap-2 text-foreground hover:underline">
-                <ClipboardList className="h-4 w-4" />
-                Manage Classes
-                </Link>
-                <Link href="/dashboard/admin/users/new" className="flex items-center gap-2 text-foreground hover:underline">
-                <UserPlus className="h-4 w-4" />
-                Add Teacher
-                </Link>
-                <Link href="/dashboard/admin/teachers" className="flex items-center gap-2 text-foreground hover:underline">
-                <GraduationCap className="h-4 w-4" />
-                Manage Teachers
-                </Link>
-            </>
-            )}
-
-            {role === "TEACHER" && (
-            <>
-                <Link href="/dashboard/teacher/grades" className="flex items-center gap-2 text-foreground hover:underline">
-                <ClipboardList className="h-4 w-4" />
-                Grades
-                </Link>
-                <Link href="/dashboard/teacher/attendance" className="flex items-center gap-2 text-foreground hover:underline">
-                <ClipboardList className="h-4 w-4" />
-                Attendance
-                </Link>
-                <Link href="/dashboard/teacher/attendance/view" className="flex items-center gap-2 text-foreground hover:underline">
-                <ClipboardList className="h-4 w-4" />
-                View Attendance
-                </Link>
-            </>
-            )}
-
-            <div className="mt-auto">
-            <LogoutButton />
-            </div>
-        </MobileSidebar>
-
-        <main className="flex-1">{children}</main>
+        <>
+        {/* Mobile top bar with hamburger */}
+        <div className="flex items-center justify-between border-b border-border p-4 lg:hidden">
+            <span className="font-bold text-foreground">School Portal</span>
+            <button onClick={() => setIsOpen(true)} className="text-foreground">
+            <Menu className="h-6 w-6" />
+            </button>
         </div>
+
+        {/* Overlay backdrop when open on mobile */}
+        {isOpen && (
+            <div
+            className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+            onClick={() => setIsOpen(false)}
+            />
+        )}
+
+        {/* Sidebar itself */}
+        <aside
+            className={`fixed inset-y-0 left-0 z-50 w-56 shrink-0 border-r border-border bg-background p-4 flex flex-col gap-2 transition-transform lg:static lg:translate-x-0 ${
+            isOpen ? "translate-x-0" : "-translate-x-full"
+            }`}
+        >
+            <button
+            onClick={() => setIsOpen(false)}
+            className="self-end text-foreground lg:hidden"
+            >
+            <X className="h-5 w-5" />
+            </button>
+            {children}
+        </aside>
+        </>
     );
 }
