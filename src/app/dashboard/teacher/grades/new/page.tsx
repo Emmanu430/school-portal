@@ -1,6 +1,7 @@
     import { auth } from "@/auth";
     import { redirect } from "next/navigation";
     import { prisma } from "@/lib/prisma";
+    import FormSelect from "@/components/FormSelect";
 
     export default async function NewGradePage() {
     const session = await auth();
@@ -16,7 +17,7 @@
     const students = await prisma.student.findMany({
         where: teacher?.classId
         ? { classId: teacher.classId }
-        : { id: -1 }, 
+        : { id: -1 },
         orderBy: { name: "asc" },
         include: { class: true },
     });
@@ -50,19 +51,14 @@
             </p>
             )}
 
-            <select
+            <FormSelect
             name="studentId"
-            className="rounded border border-border bg-input px-3 py-2 text-foreground [color-scheme:light] dark:[color-scheme:dark]"
-            required
-            defaultValue=""
-            >
-            <option value="" disabled>Select a student</option>
-            {students.map((student) => (
-                <option key={student.id} value={student.id}>
-                {student.name} ({student.class?.name ?? "—"})
-                </option>
-            ))}
-            </select>
+            placeholder="Select a student"
+            options={students.map((s) => ({
+                value: String(s.id),
+                label: `${s.name} (${s.class?.name ?? "—"})`,
+            }))}
+            />
 
             <input
             type="text"

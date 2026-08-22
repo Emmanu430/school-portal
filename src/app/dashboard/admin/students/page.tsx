@@ -2,7 +2,8 @@
     import { redirect } from "next/navigation";
     import { prisma } from "@/lib/prisma";
     import Link from "next/link";
-    import { ChevronDown, X } from "lucide-react";
+    import { X } from "lucide-react";
+    import FormSelect from "@/components/FormSelect";
 
     const PAGE_SIZE = 5;
 
@@ -66,20 +67,13 @@
             className="flex-1 rounded border border-border bg-input px-3 py-2 text-foreground placeholder:text-muted-foreground"
             />
 
-            <div className="relative">
-            <select
+            <div className="w-48">
+            <FormSelect
                 name="classId"
+                placeholder="All Classes"
                 defaultValue={classId ?? ""}
-                className="appearance-none rounded border border-border bg-input px-3 py-2 pr-8 text-foreground [color-scheme:light] dark:[color-scheme:dark]"
-            >
-                <option value="">All Classes</option>
-                {allClasses.map((c) => (
-                <option key={c.id} value={c.id}>
-                    {c.name}
-                </option>
-                ))}
-            </select>
-            <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                options={allClasses.map((c) => ({ value: String(c.id), label: c.name }))}
+            />
             </div>
 
             <button

@@ -16,6 +16,7 @@
     }
 
     const { success } = await searchParams;
+    const classes = await prisma.class.findMany({ orderBy: { name: "asc" } });
 
     async function createUser(formData: FormData) {
         "use server";
@@ -38,14 +39,15 @@
 
         if (role === "TEACHER") {
         const subject = formData.get("subject") as string;
-        const assignedClass = formData.get("assignedClass") as string;
+        const classIdRaw = formData.get("classId") as string;
+        const classId = classIdRaw ? Number(classIdRaw) : null;
 
         await prisma.teacher.create({
             data: {
             name,
             subject,
             email,
-            assignedClass: assignedClass === "" ? null : assignedClass,
+            classId,
             userId: newUser.id,
             },
         });
@@ -56,7 +58,7 @@
 
     return (
         <main className="flex min-h-screen items-center justify-center bg-background">
-        <CreateUserForm action={createUser} success={success === "1"} />
+        <CreateUserForm action={createUser} success={success === "1"} classes={classes} />
         </main>
     );
 }

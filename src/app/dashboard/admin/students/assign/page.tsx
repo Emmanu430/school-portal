@@ -2,6 +2,7 @@
     import { redirect } from "next/navigation";
     import { prisma } from "@/lib/prisma";
     import ClassSelect from "@/components/ClassSelect";
+    import FormSelect from "@/components/FormSelect";
 
     export default async function AssignClassPage({
     searchParams,
@@ -80,19 +81,14 @@
             </p>
             ) : (
             <>
-                <select
+                <FormSelect
                 name="userId"
-                defaultValue=""
-                className="rounded border border-border bg-input px-3 py-2 text-foreground [color-scheme:light] dark:[color-scheme:dark]"
-                required
-                >
-                <option value="" disabled>Select a student</option>
-                {unassignedUsers.map((u) => (
-                    <option key={u.id} value={u.id}>
-                    {u.name} ({u.email})
-                    </option>
-                ))}
-                </select>
+                placeholder="Select a student"
+                options={unassignedUsers.map((u) => ({
+                    value: String(u.id),
+                    label: `${u.name} (${u.email})`,
+                }))}
+                />
 
                 <ClassSelect classes={classes} />
 

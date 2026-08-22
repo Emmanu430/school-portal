@@ -2,13 +2,23 @@
 
     import { useState } from "react";
     import { Eye, EyeOff } from "lucide-react";
+    import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+    } from "@/components/ui/select";
+    import ClassSelect from "@/components/ClassSelect";
 
     export default function CreateUserForm({
     action,
     success,
+    classes,
     }: {
     action: (formData: FormData) => void;
     success?: boolean;
+    classes: { id: number; name: string }[];
     }) {
     const [showPassword, setShowPassword] = useState(false);
     const [role, setRole] = useState("TEACHER");
@@ -60,16 +70,16 @@
             </button>
         </div>
 
-        <select
-            name="role"
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-            className="rounded border border-border bg-input px-3 py-2 text-foreground"
-            required
-        >
-            <option value="TEACHER">Teacher</option>
-            <option value="ADMIN">Admin</option>
-        </select>
+        <input type="hidden" name="role" value={role} />
+        <Select value={role} onValueChange={(v) => setRole(v ?? "TEACHER")}>
+            <SelectTrigger className="w-full !h-auto rounded border border-border bg-input px-3 py-2 text-sm text-foreground">
+            <SelectValue>{role === "ADMIN" ? "Admin" : "Teacher"}</SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+            <SelectItem value="TEACHER">Teacher</SelectItem>
+            <SelectItem value="ADMIN">Admin</SelectItem>
+            </SelectContent>
+        </Select>
 
         {role === "TEACHER" && (
             <>
@@ -80,12 +90,7 @@
                 className="rounded border border-border bg-input px-3 py-2 text-foreground placeholder:text-muted-foreground"
                 required
             />
-            <input
-                type="text"
-                name="assignedClass"
-                placeholder="Assigned Class (e.g. SS2) — optional"
-                className="rounded border border-border bg-input px-3 py-2 text-foreground placeholder:text-muted-foreground"
-            />
+            <ClassSelect classes={classes} />
             </>
         )}
 

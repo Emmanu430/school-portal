@@ -39,8 +39,7 @@
         const userIdRaw = formData.get("userId") as string;
         const classIdRaw = formData.get("classId") as string;
 
-        const userId = userIdRaw === "" ? null : Number(userIdRaw);
-        const classId = classIdRaw ? Number(classIdRaw) : null;
+        const userId = userIdRaw === "" || userIdRaw === "none" ? null : Number(userIdRaw);        const classId = classIdRaw ? Number(classIdRaw) : null;
 
         let finalName = nameInput;
         let finalEmail = emailInput;

@@ -2,6 +2,13 @@
 
     import { useState } from "react";
     import ClassSelect from "@/components/ClassSelect";
+    import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+    } from "@/components/ui/select";
 
     type UserOption = { id: number; name: string; email: string };
     type ClassOption = { id: number; name: string };
@@ -81,19 +88,22 @@
         <label className="text-sm text-muted-foreground">
             Linked Account
         </label>
-        <select
-            name="userId"
-            value={selectedUserId}
-            onChange={(e) => setSelectedUserId(e.target.value)}
-            className="rounded border border-border bg-input px-3 py-2 text-foreground [color-scheme:light] dark:[color-scheme:dark]"
-        >
-            <option value="">— No linked account —</option>
+        <input type="hidden" name="userId" value={selectedUserId} />
+        <Select value={selectedUserId} onValueChange={(v) => setSelectedUserId(v ?? "")}>
+            <SelectTrigger className="w-full !h-auto rounded border border-border bg-input px-3 py-2 text-sm text-foreground">
+            <SelectValue placeholder="— No linked account —">
+                {linkedUser ? `${linkedUser.name} (${linkedUser.email})` : "— No linked account —"}
+            </SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+            <SelectItem value="none">— No linked account —</SelectItem>
             {availableUsers.map((user) => (
-            <option key={user.id} value={user.id}>
+                <SelectItem key={user.id} value={String(user.id)}>
                 {user.name} ({user.email})
-            </option>
+                </SelectItem>
             ))}
-        </select>
+            </SelectContent>
+        </Select>
 
         <button
             type="submit"
@@ -103,4 +113,4 @@
         </button>
         </form>
     );
-    }
+}

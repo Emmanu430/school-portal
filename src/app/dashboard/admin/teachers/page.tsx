@@ -2,8 +2,9 @@
     import { redirect } from "next/navigation";
     import { prisma } from "@/lib/prisma";
     import Link from "next/link";
-    import { ChevronDown } from "lucide-react";
     import { X } from "lucide-react";
+    import FormSelect from "@/components/FormSelect";
+
     export default async function AdminTeachersPage({
     searchParams,
     }: {
@@ -50,20 +51,13 @@
             className="flex-1 rounded border border-border bg-input px-3 py-2 text-foreground placeholder:text-muted-foreground"
             />
 
-            <div className="relative">
-            <select
+            <div className="w-48">
+            <FormSelect
                 name="subject"
+                placeholder="All Subjects"
                 defaultValue={subject ?? ""}
-                className="appearance-none rounded border border-border bg-input px-3 py-2 pr-8 text-foreground"
-            >
-                <option value="">All Subjects</option>
-                {allSubjects.map((s) => (
-                <option key={s.subject} value={s.subject}>
-                    {s.subject}
-                </option>
-                ))}
-            </select>
-            <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                options={allSubjects.map((s) => ({ value: s.subject, label: s.subject }))}
+            />
             </div>
 
             <button
@@ -74,15 +68,15 @@
             </button>
         </form>
 
-        {((search || subject) && (
+        {(search || subject) && (
             <Link
-                href="/dashboard/admin/teachers"
-                className="flex items-center gap-1 rounded-full border border-border bg-muted px-3 py-1 text-xs text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors"
+            href="/dashboard/admin/teachers"
+            className="flex items-center gap-1 rounded-full border border-border bg-muted px-3 py-1 text-xs text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors"
             >
-                <X className="h-3 w-3" />
-                Clear filters
+            <X className="h-3 w-3" />
+            Clear filters
             </Link>
-        ))}
+        )}
 
         <table className="w-full max-w-2xl border-collapse">
             <thead>
