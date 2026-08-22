@@ -25,7 +25,15 @@
 
         {student ? (
             <>
-            <div className="rounded-lg border border-border p-4 text-center">
+            <div className="rounded-lg border border-border p-4 text-center flex flex-col items-center gap-2">
+                {student.photoUrl && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                    src={student.photoUrl}
+                    alt={student.name}
+                    className="h-20 w-20 rounded-full object-cover border border-border"
+                />
+                )}
                 <p className="text-foreground">Class: {student.class?.name ?? "—"}</p>
                 <p className="text-muted-foreground text-sm">{student.email}</p>
             </div>

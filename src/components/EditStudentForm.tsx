@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import ClassSelect from "@/components/ClassSelect";
+import PhotoUpload from "@/components/PhotoUpload";
 import {
   Select,
   SelectContent,
@@ -19,7 +20,7 @@ export default function EditStudentForm({
   classes,
   action,
 }: {
-  student: { name: string; email: string; userId: number | null; classId: number | null };
+  student: { name: string; email: string; userId: number | null; classId: number | null; photoUrl: string | null };
   availableUsers: UserOption[];
   classes: ClassOption[];
   action: (formData: FormData) => void;
@@ -37,6 +38,8 @@ export default function EditStudentForm({
       className="flex flex-col gap-4 rounded-lg border border-border bg-card p-6"
     >
       <h1 className="text-2xl font-bold text-foreground">Edit Student</h1>
+
+      <PhotoUpload currentPhotoUrl={student.photoUrl} />
 
       <input
         type="text"

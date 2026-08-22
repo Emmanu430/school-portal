@@ -97,6 +97,7 @@
         <table className="w-full max-w-2xl border-collapse">
             <thead>
             <tr className="border-b border-border text-left">
+                <th className="p-2 text-foreground"></th>
                 <th className="p-2 text-foreground">Name</th>
                 <th className="p-2 text-foreground">Class</th>
                 <th className="p-2 text-foreground">Email</th>
@@ -105,6 +106,18 @@
             <tbody>
             {students.map((student) => (
                 <tr key={student.id} className="border-b border-border">
+                <td className="p-2">
+                    {student.photoUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                        src={student.photoUrl}
+                        alt={student.name}
+                        className="h-8 w-8 rounded-full object-cover"
+                    />
+                    ) : (
+                    <div className="h-8 w-8 rounded-full bg-muted" />
+                    )}
+                </td>
                 <td className="p-2 text-foreground">
                     <Link
                     href={`/dashboard/admin/students/${student.id}/edit`}

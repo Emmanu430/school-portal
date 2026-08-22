@@ -29,6 +29,7 @@ model Student {
 
   grades    Grade[]
   attendance Attendance[]
+  photoUrl  String?
 
   classId   Int?
   class     Class?   @relation(fields: [classId], references: [id])

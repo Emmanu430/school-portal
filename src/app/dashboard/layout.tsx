@@ -4,7 +4,7 @@
     import { ThemeToggle } from "@/components/theme-toggle";
     import LogoutButton from "@/components/LogoutButton";
     import { LayoutDashboard, UserPlus, Users, GraduationCap, ClipboardList } from "lucide-react";
-
+    
     export default async function DashboardLayout({
     children,
     }: {

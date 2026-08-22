@@ -38,8 +38,10 @@
         const emailInput = formData.get("email") as string;
         const userIdRaw = formData.get("userId") as string;
         const classIdRaw = formData.get("classId") as string;
+        const photoUrl = formData.get("photoUrl") as string;
 
-        const userId = userIdRaw === "" || userIdRaw === "none" ? null : Number(userIdRaw);        const classId = classIdRaw ? Number(classIdRaw) : null;
+        const userId = userIdRaw === "" || userIdRaw === "none" ? null : Number(userIdRaw);
+        const classId = classIdRaw ? Number(classIdRaw) : null;
 
         let finalName = nameInput;
         let finalEmail = emailInput;
@@ -54,7 +56,13 @@
 
         await prisma.student.update({
         where: { id: Number(id) },
-        data: { name: finalName, email: finalEmail, userId, classId },
+        data: {
+            name: finalName,
+            email: finalEmail,
+            userId,
+            classId,
+            photoUrl: photoUrl || null,
+        },
         });
 
         redirect("/dashboard/admin/students");
