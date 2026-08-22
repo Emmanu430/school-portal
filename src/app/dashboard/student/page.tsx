@@ -11,7 +11,11 @@
 
     const student = await prisma.student.findUnique({
         where: { userId: Number(session.user.id) },
-        include: { grades: true, class: true },
+        include: {
+        grades: true,
+        class: true,
+        attendance: { orderBy: { date: "desc" } },
+        },
     });
 
     return (
@@ -45,6 +49,32 @@
                         <td className="p-2 text-foreground">{grade.subject}</td>
                         <td className="p-2 text-muted-foreground">{grade.term}</td>
                         <td className="p-2 text-muted-foreground">{grade.score}</td>
+                        </tr>
+                    ))}
+                    </tbody>
+                </table>
+                )}
+            </div>
+
+            <div className="w-full max-w-md">
+                <h2 className="text-xl font-bold text-foreground mb-2">My Attendance</h2>
+                {student.attendance.length === 0 ? (
+                <p className="text-muted-foreground text-sm">No attendance recorded yet.</p>
+                ) : (
+                <table className="w-full border-collapse">
+                    <thead>
+                    <tr className="border-b border-border text-left">
+                        <th className="p-2 text-foreground">Date</th>
+                        <th className="p-2 text-foreground">Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {student.attendance.map((record) => (
+                        <tr key={record.id} className="border-b border-border">
+                        <td className="p-2 text-foreground">
+                            {record.date.toLocaleDateString()}
+                        </td>
+                        <td className="p-2 text-muted-foreground">{record.status}</td>
                         </tr>
                     ))}
                     </tbody>

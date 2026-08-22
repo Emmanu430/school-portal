@@ -74,6 +74,12 @@
                     Attendance
                 </Link>
                 )}
+                {role === "TEACHER" && (
+                    <Link href="/dashboard/teacher/attendance/view" className="flex items-center gap-2 text-foreground hover:underline">
+                        <ClipboardList className="h-4 w-4" />
+                        View Attendance
+                    </Link>
+                    )}
             <div className="mt-auto">
             <LogoutButton />
             </div>
