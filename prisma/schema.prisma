@@ -28,6 +28,7 @@ model Student {
   user      User?    @relation(fields: [userId], references: [id])
 
   grades    Grade[]
+  attendance Attendance[]
 
   classId   Int?
   class     Class?   @relation(fields: [classId], references: [id])
@@ -51,7 +52,7 @@ model Teacher {
   email     String   @unique
   createdAt DateTime @default(now())
 
-
+    attendance Attendance[]
 
   userId    Int?     @unique
   user      User?    @relation(fields: [userId], references: [id])
@@ -75,6 +76,7 @@ model Grade {
   teacherId Int?
   teacher   Teacher? @relation(fields: [teacherId], references: [id])
 }
+
 model PasswordResetToken {
   id        Int      @id @default(autoincrement())
   token     String   @unique
@@ -88,4 +90,25 @@ model Class {
   name     String    @unique
   students Student[]
   teachers Teacher[]
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  LATE
+}
+
+model Attendance {
+  id        Int              @id @default(autoincrement())
+  date      DateTime
+  status    AttendanceStatus
+  createdAt DateTime         @default(now())
+
+  studentId Int
+  student   Student          @relation(fields: [studentId], references: [id])
+
+  teacherId Int?
+  teacher   Teacher?         @relation(fields: [teacherId], references: [id])
+
+  @@unique([studentId, date])
 }
