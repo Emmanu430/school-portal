@@ -42,17 +42,10 @@
         redirect("/dashboard/admin/students/assign?error=exists");
         }
 
-        let className = "";
-        if (classId) {
-        const cls = await prisma.class.findUnique({ where: { id: classId } });
-        className = cls?.name ?? "";
-        }
-
         await prisma.student.create({
         data: {
             name: user.name,
             email: user.email,
-            className,
             classId,
             userId: user.id,
         },

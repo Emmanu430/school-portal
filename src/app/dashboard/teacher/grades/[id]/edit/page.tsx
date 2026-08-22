@@ -21,12 +21,14 @@
     if (!grade) {
         notFound();
     }
+
     const teacher = await prisma.teacher.findUnique({
         where: { userId: Number(session.user.id) },
-        });
-        if (!teacher?.assignedClass || grade.student.className !== teacher.assignedClass) {
-            redirect("/dashboard/teacher/grades");
-        }
+    });
+
+    if (!teacher?.classId || grade.student.classId !== teacher.classId) {
+        redirect("/dashboard/teacher/grades");
+    }
 
     async function updateGrade(formData: FormData) {
         "use server";

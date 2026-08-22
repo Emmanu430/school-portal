@@ -21,7 +21,6 @@ enum Role {
 model Student {
   id        Int      @id @default(autoincrement())
   name      String
-  className     String
   email     String   @unique
   createdAt DateTime @default(now())
 
@@ -52,7 +51,7 @@ model Teacher {
   email     String   @unique
   createdAt DateTime @default(now())
 
-  assignedClass String?
+
 
   userId    Int?     @unique
   user      User?    @relation(fields: [userId], references: [id])

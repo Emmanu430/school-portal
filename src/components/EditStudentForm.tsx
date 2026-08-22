@@ -12,7 +12,7 @@ export default function EditStudentForm({
   classes,
   action,
 }: {
-  student: { name: string; className: string; email: string; userId: number | null; classId: number | null };
+  student: { name: string; email: string; userId: number | null; classId: number | null };
   availableUsers: UserOption[];
   classes: ClassOption[];
   action: (formData: FormData) => void;

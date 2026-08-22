@@ -53,15 +53,9 @@
         }
         }
 
-        let className = "";
-        if (classId) {
-        const cls = await prisma.class.findUnique({ where: { id: classId } });
-        className = cls?.name ?? "";
-        }
-
         await prisma.student.update({
         where: { id: Number(id) },
-        data: { name: finalName, className, email: finalEmail, userId, classId },
+        data: { name: finalName, email: finalEmail, userId, classId },
         });
 
         redirect("/dashboard/admin/students");

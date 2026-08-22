@@ -14,10 +14,11 @@
     });
 
     const students = await prisma.student.findMany({
-        where: teacher?.assignedClass
-        ? { className: teacher.assignedClass }
-        : { id: -1 }, // no class assigned → show nobody, safer than showing everyone
+        where: teacher?.classId
+        ? { classId: teacher.classId }
+        : { id: -1 }, 
         orderBy: { name: "asc" },
+        include: { class: true },
     });
 
     async function createGrade(formData: FormData) {
@@ -43,7 +44,7 @@
         >
             <h1 className="text-2xl font-bold text-foreground">Add Grade</h1>
 
-            {!teacher?.assignedClass && (
+            {!teacher?.classId && (
             <p className="text-sm text-destructive">
                 You have no assigned class yet. Contact an admin.
             </p>
@@ -51,14 +52,14 @@
 
             <select
             name="studentId"
-            className="rounded border border-border bg-input px-3 py-2 text-foreground"
+            className="rounded border border-border bg-input px-3 py-2 text-foreground [color-scheme:light] dark:[color-scheme:dark]"
             required
             defaultValue=""
             >
             <option value="" disabled>Select a student</option>
             {students.map((student) => (
                 <option key={student.id} value={student.id}>
-                {student.name} ({student.className})
+                {student.name} ({student.class?.name ?? "—"})
                 </option>
             ))}
             </select>

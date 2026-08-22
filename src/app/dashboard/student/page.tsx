@@ -11,7 +11,7 @@
 
     const student = await prisma.student.findUnique({
         where: { userId: Number(session.user.id) },
-        include: { grades: true },
+        include: { grades: true, class: true },
     });
 
     return (
@@ -22,7 +22,7 @@
         {student ? (
             <>
             <div className="rounded-lg border border-border p-4 text-center">
-                <p className="text-foreground">Class: {student.className}</p>
+                <p className="text-foreground">Class: {student.class?.name ?? "—"}</p>
                 <p className="text-muted-foreground text-sm">{student.email}</p>
             </div>
 

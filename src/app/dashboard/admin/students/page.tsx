@@ -9,7 +9,7 @@
     export default async function AdminStudentsPage({
     searchParams,
     }: {
-    searchParams: Promise<{ search?: string; className?: string; page?: string }>;
+    searchParams: Promise<{ search?: string; classId?: string; page?: string }>;
     }) {
     const session = await auth();
 
@@ -17,12 +17,12 @@
         redirect("/login");
     }
 
-    const { search, className, page } = await searchParams;
+    const { search, classId, page } = await searchParams;
     const currentPage = Number(page) || 1;
 
     const where = {
         name: search ? { contains: search, mode: "insensitive" as const } : undefined,
-        className: className ? className : undefined,
+        classId: classId ? Number(classId) : undefined,
     };
 
     const totalStudents = await prisma.student.count({ where });
@@ -33,17 +33,15 @@
         orderBy: { createdAt: "desc" },
         skip: (currentPage - 1) * PAGE_SIZE,
         take: PAGE_SIZE,
+        include: { class: true },
     });
 
-    const allClasses = await prisma.student.findMany({
-        select: { className: true },
-        distinct: ["className"],
-    });
+    const allClasses = await prisma.class.findMany({ orderBy: { name: "asc" } });
 
     function buildPageLink(targetPage: number) {
         const params = new URLSearchParams();
         if (search) params.set("search", search);
-        if (className) params.set("className", className);
+        if (classId) params.set("classId", classId);
         params.set("page", String(targetPage));
         return `/dashboard/admin/students?${params.toString()}`;
     }
@@ -70,14 +68,14 @@
 
             <div className="relative">
             <select
-                name="className"
-                defaultValue={className ?? ""}
-                className="appearance-none rounded border border-border bg-input px-3 py-2 pr-8 text-foreground"
+                name="classId"
+                defaultValue={classId ?? ""}
+                className="appearance-none rounded border border-border bg-input px-3 py-2 pr-8 text-foreground [color-scheme:light] dark:[color-scheme:dark]"
             >
                 <option value="">All Classes</option>
                 {allClasses.map((c) => (
-                <option key={c.className} value={c.className}>
-                    {c.className}
+                <option key={c.id} value={c.id}>
+                    {c.name}
                 </option>
                 ))}
             </select>
@@ -92,7 +90,7 @@
             </button>
         </form>
 
-        {(search || className) && (
+        {(search || classId) && (
             <Link
             href="/dashboard/admin/students"
             className="flex items-center gap-1 rounded-full border border-border bg-muted px-3 py-1 text-xs text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors"
@@ -121,7 +119,7 @@
                     {student.name}
                     </Link>
                 </td>
-                <td className="p-2 text-muted-foreground">{student.className}</td>
+                <td className="p-2 text-muted-foreground">{student.class?.name ?? "—"}</td>
                 <td className="p-2 text-muted-foreground">{student.email}</td>
                 </tr>
             ))}

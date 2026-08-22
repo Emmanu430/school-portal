@@ -64,19 +64,12 @@
         }
         }
 
-        let assignedClass = "";
-        if (classId) {
-        const cls = await prisma.class.findUnique({ where: { id: classId } });
-        assignedClass = cls?.name ?? "";
-        }
-
         await prisma.teacher.update({
         where: { id: Number(id) },
         data: {
             name: finalName,
             subject,
             email: finalEmail,
-            assignedClass: assignedClass === "" ? null : assignedClass,
             classId,
             userId,
         },

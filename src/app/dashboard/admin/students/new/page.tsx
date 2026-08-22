@@ -32,12 +32,6 @@
         redirect("/dashboard/admin/students/new?error=exists");
         }
 
-        let className = "";
-        if (classId) {
-        const cls = await prisma.class.findUnique({ where: { id: classId } });
-        className = cls?.name ?? "";
-        }
-
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const newUser = await prisma.user.create({
@@ -48,7 +42,6 @@
         data: {
             name,
             email,
-            className,
             classId,
             userId: newUser.id,
         },
