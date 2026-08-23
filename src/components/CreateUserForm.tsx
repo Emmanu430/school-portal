@@ -52,7 +52,7 @@
             required
         />
 
-        <div className="relative">
+        <div className="relative  flex items-center">
             <input
             type={showPassword ? "text" : "password"}
             name="password"
@@ -64,7 +64,7 @@
             <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+            className="absolute right-3  text-muted-foreground"
             >
             {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
