@@ -1,9 +1,9 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
-import Link from "next/link";
-import { ThemeToggle } from "@/components/theme-toggle";
+
 import LogoutButton from "@/components/LogoutButton";
 import MobileSidebar from "@/components/MobileSidebar";
+import { SidebarLink } from "@/components/Sidebarlink";
 import { LayoutDashboard, UserPlus, Users, GraduationCap, ClipboardList } from "lucide-react";
 
 export default async function DashboardLayout({
@@ -19,73 +19,89 @@ export default async function DashboardLayout({
 
   const role = session.user?.role;
 
+  const userInitials = session.user?.name
+    ?.split(" ")
+    .map((n) => n[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+
   return (
     <div className="flex min-h-screen bg-background">
-      <MobileSidebar>
-        <div className="flex items-center justify-between mb-2">
-          <p className="text-xs uppercase text-muted-foreground">
+      <MobileSidebar userInitials={userInitials}>
+        <div className="flex items-center justify-between mb-2 px-3">
+          <p className="text-xs uppercase text-muted-foreground tracking-wide">
             {role} Menu
           </p>
-          <ThemeToggle />
         </div>
 
-        <Link href="/dashboard" className="flex items-center gap-2 text-foreground hover:underline">
-          <LayoutDashboard className="h-4 w-4" />
-          Dashboard
-        </Link>
+        <SidebarLink
+          href="/dashboard"
+          icon={<LayoutDashboard className="h-4 w-4" />}
+          label="Dashboard"
+        />
 
         {role === "ADMIN" && (
           <>
-            <Link href="/dashboard/admin/students/assign" className="flex items-center gap-2 text-foreground hover:underline">
-              <UserPlus className="h-4 w-4" />
-              Assign Class
-            </Link>
-            <Link href="/dashboard/admin/students/new" className="flex items-center gap-2 text-foreground hover:underline">
-              <UserPlus className="h-4 w-4" />
-              Add Student
-            </Link>
-            <Link href="/dashboard/admin/students" className="flex items-center gap-2 text-foreground hover:underline">
-              <Users className="h-4 w-4" />
-              Manage Students
-            </Link>
-            <Link href="/dashboard/admin/classes" className="flex items-center gap-2 text-foreground hover:underline">
-              <ClipboardList className="h-4 w-4" />
-              Manage Classes
-            </Link>
-            <Link href="/dashboard/admin/users/new" className="flex items-center gap-2 text-foreground hover:underline">
-              <UserPlus className="h-4 w-4" />
-              Add Teacher
-            </Link>
-            <Link href="/dashboard/admin/teachers" className="flex items-center gap-2 text-foreground hover:underline">
-              <GraduationCap className="h-4 w-4" />
-              Manage Teachers
-            </Link>
+            <SidebarLink
+              href="/dashboard/admin/students/assign"
+              icon={<UserPlus className="h-4 w-4" />}
+              label="Assign Class"
+            />
+            <SidebarLink
+              href="/dashboard/admin/students/new"
+              icon={<UserPlus className="h-4 w-4" />}
+              label="Add Student"
+            />
+            <SidebarLink
+              href="/dashboard/admin/students"
+              icon={<Users className="h-4 w-4" />}
+              label="Manage Students"
+            />
+            <SidebarLink
+              href="/dashboard/admin/classes"
+              icon={<ClipboardList className="h-4 w-4" />}
+              label="Manage Classes"
+            />
+            <SidebarLink
+              href="/dashboard/admin/users/new"
+              icon={<UserPlus className="h-4 w-4" />}
+              label="Add Teacher"
+            />
+            <SidebarLink
+              href="/dashboard/admin/teachers"
+              icon={<GraduationCap className="h-4 w-4" />}
+              label="Manage Teachers"
+            />
           </>
         )}
 
         {role === "TEACHER" && (
           <>
-            <Link href="/dashboard/teacher/grades" className="flex items-center gap-2 text-foreground hover:underline">
-              <ClipboardList className="h-4 w-4" />
-              Grades
-            </Link>
-            <Link href="/dashboard/teacher/attendance" className="flex items-center gap-2 text-foreground hover:underline">
-              <ClipboardList className="h-4 w-4" />
-              Attendance
-            </Link>
-            <Link href="/dashboard/teacher/attendance/view" className="flex items-center gap-2 text-foreground hover:underline">
-              <ClipboardList className="h-4 w-4" />
-              View Attendance
-            </Link>
+            <SidebarLink
+              href="/dashboard/teacher/grades"
+              icon={<ClipboardList className="h-4 w-4" />}
+              label="Grades"
+            />
+            <SidebarLink
+              href="/dashboard/teacher/attendance"
+              icon={<ClipboardList className="h-4 w-4" />}
+              label="Attendance"
+            />
+            <SidebarLink
+              href="/dashboard/teacher/attendance/view"
+              icon={<ClipboardList className="h-4 w-4" />}
+              label="View Attendance"
+            />
           </>
         )}
 
-        <div className="mt-auto">
+        <div className="mt-auto px-3">
           <LogoutButton />
         </div>
       </MobileSidebar>
 
-      <main className="flex-1">{children}</main>
+      <main className="flex-1 pt-14">{children}</main>
     </div>
   );
 }
