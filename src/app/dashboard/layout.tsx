@@ -1,6 +1,5 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
-
 import LogoutButton from "@/components/LogoutButton";
 import MobileSidebar from "@/components/MobileSidebar";
 import { SidebarLink } from "@/components/Sidebarlink";
@@ -29,72 +28,38 @@ export default async function DashboardLayout({
   return (
     <div className="flex min-h-screen bg-background">
       <MobileSidebar userInitials={userInitials}>
-        <div className="flex items-center justify-between mb-2 px-3">
+        <div className="mb-3 px-3">
           <p className="text-xs uppercase text-muted-foreground tracking-wide">
             {role} Menu
           </p>
         </div>
 
-        <SidebarLink
-          href="/dashboard"
-          icon={<LayoutDashboard className="h-4 w-4" />}
-          label="Dashboard"
-        />
+        <nav className="flex flex-col gap-2.5">
+          <SidebarLink
+            href="/dashboard"
+            icon={<LayoutDashboard className="h-4 w-4" />}
+            label="Dashboard"
+          />
 
-        {role === "ADMIN" && (
-          <>
-            <SidebarLink
-              href="/dashboard/admin/students/assign"
-              icon={<UserPlus className="h-4 w-4" />}
-              label="Assign Class"
-            />
-            <SidebarLink
-              href="/dashboard/admin/students/new"
-              icon={<UserPlus className="h-4 w-4" />}
-              label="Add Student"
-            />
-            <SidebarLink
-              href="/dashboard/admin/students"
-              icon={<Users className="h-4 w-4" />}
-              label="Manage Students"
-            />
-            <SidebarLink
-              href="/dashboard/admin/classes"
-              icon={<ClipboardList className="h-4 w-4" />}
-              label="Manage Classes"
-            />
-            <SidebarLink
-              href="/dashboard/admin/users/new"
-              icon={<UserPlus className="h-4 w-4" />}
-              label="Add Teacher"
-            />
-            <SidebarLink
-              href="/dashboard/admin/teachers"
-              icon={<GraduationCap className="h-4 w-4" />}
-              label="Manage Teachers"
-            />
-          </>
-        )}
+          {role === "ADMIN" && (
+            <>
+              <SidebarLink href="/dashboard/admin/students/assign" icon={<UserPlus className="h-4 w-4" />} label="Assign Class" />
+              <SidebarLink href="/dashboard/admin/students/new" icon={<UserPlus className="h-4 w-4" />} label="Add Student" />
+              <SidebarLink href="/dashboard/admin/students" icon={<Users className="h-4 w-4" />} label="Manage Students" />
+              <SidebarLink href="/dashboard/admin/classes" icon={<ClipboardList className="h-4 w-4" />} label="Manage Classes" />
+              <SidebarLink href="/dashboard/admin/users/new" icon={<UserPlus className="h-4 w-4" />} label="Add Teacher" />
+              <SidebarLink href="/dashboard/admin/teachers" icon={<GraduationCap className="h-4 w-4" />} label="Manage Teachers" />
+            </>
+          )}
 
-        {role === "TEACHER" && (
-          <>
-            <SidebarLink
-              href="/dashboard/teacher/grades"
-              icon={<ClipboardList className="h-4 w-4" />}
-              label="Grades"
-            />
-            <SidebarLink
-              href="/dashboard/teacher/attendance"
-              icon={<ClipboardList className="h-4 w-4" />}
-              label="Attendance"
-            />
-            <SidebarLink
-              href="/dashboard/teacher/attendance/view"
-              icon={<ClipboardList className="h-4 w-4" />}
-              label="View Attendance"
-            />
-          </>
-        )}
+          {role === "TEACHER" && (
+            <>
+              <SidebarLink href="/dashboard/teacher/grades" icon={<ClipboardList className="h-4 w-4" />} label="Grades" />
+              <SidebarLink href="/dashboard/teacher/attendance" icon={<ClipboardList className="h-4 w-4" />} label="Attendance" />
+              <SidebarLink href="/dashboard/teacher/attendance/view" icon={<ClipboardList className="h-4 w-4" />} label="View Attendance" />
+            </>
+          )}
+        </nav>
 
         <div className="mt-auto px-3">
           <LogoutButton />
