@@ -33,7 +33,7 @@
     }
 
     return (
-        <main className="flex min-h-screen items-center justify-center bg-background">
+        <main className="flex min-h-screen items-center justify-center bg-background px-4">
         <form
             onSubmit={handleSubmit}
             className="flex w-full max-w-sm flex-col gap-4 rounded-lg border border-border bg-card p-6"
@@ -50,7 +50,7 @@
             required
             />
 
-            <div className="relative">
+            <div className="relative flex items-center">
             <input
                 type={showPassword ? "text" : "password"}
                 name="password"
@@ -61,7 +61,7 @@
             <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+                className="absolute right-3 text-muted-foreground"
             >
                 {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
@@ -74,9 +74,9 @@
             Log In
             </button>
             <p className="text-sm text-center text-muted-foreground">
-                <Link href="/forgot-password" className="underline">
-                    Forgot password?
-                </Link>
+            <Link href="/forgot-password" className="underline">
+                Forgot password?
+            </Link>
             </p>
             <p className="text-sm text-center text-muted-foreground">
             Don&apos;t have an account?{" "}
