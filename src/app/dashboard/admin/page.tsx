@@ -63,16 +63,19 @@ export default async function AdminDashboard() {
           icon={GraduationCap}
           label="Total students"
           value={studentCount.toLocaleString()}
+          menuHref="/dashboard/admin/students"
         />
         <StatCard
           icon={Users}
           label="Teaching staff"
           value={teacherCount.toLocaleString()}
+          menuHref="/dashboard/admin/teachers"
         />
         <StatCard
           icon={ClipboardList}
           label="Classes"
           value={classCount.toLocaleString()}
+          menuHref="/dashboard/admin/classes"
         />
       </div>
       <div className="mt-4">

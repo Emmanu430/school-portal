@@ -2,15 +2,19 @@
     import { redirect } from "next/navigation";
     import { prisma } from "@/lib/prisma";
     import Link from "next/link";
-    import { X } from "lucide-react";
-    import FormSelect from "@/components/FormSelect";
+    import { UserPlus } from "lucide-react";
+    import { StatCard } from "@/components/Statcard";
+    import { GraduationCap, TrendingUp } from "lucide-react";
+    import { ResponsiveHeaderRow } from "@/components/Responsiveheaderrow";
+    import LiveSearch from "@/components/LiveSearch";
+    import { StudentsTable } from "@/components/StudentsTable";
 
     const PAGE_SIZE = 5;
 
     export default async function AdminStudentsPage({
     searchParams,
     }: {
-    searchParams: Promise<{ search?: string; classId?: string; page?: string }>;
+    searchParams: Promise<{ search?: string; page?: string }>;
     }) {
     const session = await auth();
 
@@ -18,16 +22,21 @@
         redirect("/login");
     }
 
-    const { search, classId, page } = await searchParams;
+    const { search, page } = await searchParams;
     const currentPage = Number(page) || 1;
 
     const where = {
         name: search ? { contains: search, mode: "insensitive" as const } : undefined,
-        classId: classId ? Number(classId) : undefined,
     };
 
     const totalStudents = await prisma.student.count({ where });
     const totalPages = Math.ceil(totalStudents / PAGE_SIZE);
+
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    const newEnrollments = await prisma.student.count({
+        where: { createdAt: { gte: thirtyDaysAgo } },
+    });
 
     const students = await prisma.student.findMany({
         where,
@@ -37,129 +46,127 @@
         include: { class: true },
     });
 
-    const allClasses = await prisma.class.findMany({ orderBy: { name: "asc" } });
-
     function buildPageLink(targetPage: number) {
         const params = new URLSearchParams();
         if (search) params.set("search", search);
-        if (classId) params.set("classId", classId);
         params.set("page", String(targetPage));
         return `/dashboard/admin/students?${params.toString()}`;
     }
 
+    function initials(name: string) {
+        return name
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .slice(0, 2)
+        .toUpperCase();
+    }
+
     return (
-        <main className="flex min-h-screen flex-col items-center gap-6 py-16 bg-background">
-        <h1 className="text-3xl font-bold text-foreground">Manage Students</h1>
-
-        <Link
-            href="/dashboard/admin/students/new"
-            className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
-        >
-            + Add Student
-        </Link>
-
-        <form className="flex w-full max-w-2xl gap-2" method="GET">
-            <input
-            type="text"
-            name="search"
-            defaultValue={search}
-            placeholder="Search by name..."
-            className="flex-1 rounded border border-border bg-input px-3 py-2 text-foreground placeholder:text-muted-foreground"
-            />
-
-            <div className="w-48">
-            <FormSelect
-                name="classId"
-                placeholder="All Classes"
-                defaultValue={classId ?? ""}
-                options={allClasses.map((c) => ({ value: String(c.id), label: c.name }))}
-            />
+        <main className="min-h-screen bg-background p-5 sm:p-8">
+        <ResponsiveHeaderRow
+            left={
+            <div>
+                <p className="text-xs text-primary font-medium">School directory</p>
+                <h1 className="mt-1 text-2xl sm:text-3xl font-medium text-foreground">
+                Students
+                </h1>
+                <p className="mt-1 text-sm text-muted-foreground">
+                Manage student records and classes.
+                </p>
             </div>
-
-            <button
-            type="submit"
-            className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
-            >
-            Filter
-            </button>
-        </form>
-
-        {(search || classId) && (
+            }
+            right={
             <Link
-            href="/dashboard/admin/students"
-            className="flex items-center gap-1 rounded-full border border-border bg-muted px-3 py-1 text-xs text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors"
+                href="/dashboard/admin/students/new"
+                className="flex items-center justify-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 whitespace-nowrap"
             >
-            <X className="h-3 w-3" />
-            Clear filters
+                <UserPlus className="h-4 w-4" />
+                Add student
             </Link>
-        )}
+            }
+        />
+        <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-xl">
+            <StatCard
+            icon={GraduationCap}
+            label="Total students"
+            value={totalStudents.toLocaleString()}
+            />
+            <StatCard
+            icon={TrendingUp}
+            label="New enrollments"
+            value={newEnrollments.toLocaleString()}
+            helperText="Last 30 days"
+            />
+        </div>
 
-        <table className="w-full max-w-2xl border-collapse">
-            <thead>
-            <tr className="border-b border-border text-left">
-                <th className="p-2 text-foreground"></th>
-                <th className="p-2 text-foreground">Name</th>
-                <th className="p-2 text-foreground">Class</th>
-                <th className="p-2 text-foreground">Email</th>
-            </tr>
-            </thead>
-            <tbody>
-            {students.map((student) => (
-                <tr key={student.id} className="border-b border-border">
-                <td className="p-2">
-                    {student.photoUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                        src={student.photoUrl}
-                        alt={student.name}
-                        className="h-8 w-8 rounded-full object-cover"
-                    />
-                    ) : (
-                    <div className="h-8 w-8 rounded-full bg-muted" />
-                    )}
-                </td>
-                <td className="p-2 text-foreground">
-                    <Link
-                    href={`/dashboard/admin/students/${student.id}/edit`}
-                    className="underline hover:text-muted-foreground"
-                    >
-                    {student.name}
-                    </Link>
-                </td>
-                <td className="p-2 text-muted-foreground">{student.class?.name ?? "—"}</td>
-                <td className="p-2 text-muted-foreground">{student.email}</td>
-                </tr>
-            ))}
-            </tbody>
-        </table>
-
-        {students.length === 0 && (
-            <p className="text-muted-foreground">No students match your search.</p>
-        )}
-
-        {totalPages > 1 && (
-            <div className="flex items-center gap-4">
-            {currentPage > 1 ? (
-                <Link href={buildPageLink(currentPage - 1)} className="text-sm text-primary underline">
-                Previous
-                </Link>
-            ) : (
-                <span className="text-sm text-muted-foreground">Previous</span>
-            )}
-
-            <span className="text-sm text-muted-foreground">
-                Page {currentPage} of {totalPages}
-            </span>
-
-            {currentPage < totalPages ? (
-                <Link href={buildPageLink(currentPage + 1)} className="text-sm text-primary underline">
-                Next
-                </Link>
-            ) : (
-                <span className="text-sm text-muted-foreground">Next</span>
-            )}
+        <div className="mt-6 rounded-2xl border border-border bg-card p-4 sm:p-5">
+            <div className="mb-4">
+                <ResponsiveHeaderRow
+                    left={
+                    <div>
+                        <h2 className="text-sm font-medium text-foreground">
+                        All students
+                        </h2>
+                        <p className="text-xs text-muted-foreground">
+                        Browse and manage your student directory.
+                        </p>
+                    </div>
+                    }
+                    right={
+                    <div className="sm:w-64">
+                        <LiveSearch placeholder="Search students..." />
+                    </div>
+                    }
+                />
             </div>
-        )}
+
+            <StudentsTable
+                students={students.map((s) => ({
+                    id: s.id,
+                    name: s.name,
+                    email: s.email,
+                    photoUrl: s.photoUrl,
+                    className: s.class?.name,
+                }))}
+                />
+
+            {students.length === 0 && (
+            <p className="mt-4 text-sm text-muted-foreground">
+                No students match your search.
+            </p>
+            )}
+
+            {totalPages > 1 && (
+            <div className="mt-4 flex items-center justify-between">
+                {currentPage > 1 ? (
+                <Link
+                    href={buildPageLink(currentPage - 1)}
+                    className="text-sm text-primary hover:underline"
+                >
+                    Previous
+                </Link>
+                ) : (
+                <span className="text-sm text-muted-foreground">Previous</span>
+                )}
+
+                <span className="text-xs text-muted-foreground">
+                Page {currentPage} of {totalPages}
+                </span>
+
+                {currentPage < totalPages ? (
+                <Link
+                    href={buildPageLink(currentPage + 1)}
+                    className="text-sm text-primary hover:underline"
+                >
+                    Next
+                </Link>
+                ) : (
+                <span className="text-sm text-muted-foreground">Next</span>
+                )}
+            </div>
+            )}
+        </div>
         </main>
     );
 }

@@ -1,4 +1,5 @@
     import { LucideIcon, MoreHorizontal } from "lucide-react";
+    import Link from "next/link";
     import { cn } from "@/lib/utils";
 
     interface StatCardProps {
@@ -11,6 +12,7 @@
     };
     helperText?: string;
     className?: string;
+    menuHref?: string;
     }
 
     export function StatCard({
@@ -20,6 +22,7 @@
     change,
     helperText,
     className,
+    menuHref,
     }: StatCardProps) {
     return (
         <div
@@ -32,13 +35,15 @@
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
             <Icon className="h-4.5 w-4.5 text-primary" />
             </div>
-            <button
-            type="button"
-            className="text-muted-foreground hover:text-foreground"
-            aria-label={`More options for ${label}`}
+            {menuHref && (
+            <Link
+                href={menuHref}
+                className="text-muted-foreground hover:text-foreground"
+                aria-label={`View all for ${label}`}
             >
-            <MoreHorizontal className="h-4 w-4" />
-            </button>
+                <MoreHorizontal className="h-4 w-4" />
+            </Link>
+            )}
         </div>
 
         <p className="mt-3 text-xs text-muted-foreground">{label}</p>
