@@ -32,7 +32,7 @@
 
         {success && (
             <p className="text-sm text-primary">
-            Account created. Now link it to a teacher record from Manage Teachers.
+            Account created!!.
             </p>
         )}
 
@@ -72,7 +72,7 @@
 
         <input type="hidden" name="role" value={role} />
         <Select value={role} onValueChange={(v) => setRole(v ?? "TEACHER")}>
-            <SelectTrigger className="w-full !h-auto rounded border border-border bg-input px-3 py-2 text-sm text-foreground">
+            <SelectTrigger className="w-full h-auto! rounded border border-border bg-input px-3 py-2 text-sm text-foreground">
             <SelectValue>{role === "ADMIN" ? "Admin" : "Teacher"}</SelectValue>
             </SelectTrigger>
             <SelectContent>

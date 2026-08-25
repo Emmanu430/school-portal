@@ -34,7 +34,7 @@ export default async function DashboardLayout({
           </p>
         </div>
 
-        <nav className="flex flex-col gap-2.5">
+        <nav className="flex-1 min-h-0 overflow-y-auto flex flex-col gap-2.5">
           <SidebarLink
             href="/dashboard"
             icon={<LayoutDashboard className="h-4 w-4" />}
