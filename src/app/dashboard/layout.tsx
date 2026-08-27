@@ -1,9 +1,9 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
-import LogoutButton from "@/components/LogoutButton";
 import MobileSidebar from "@/components/MobileSidebar";
 import { SidebarLink } from "@/components/Sidebarlink";
 import { LayoutDashboard, UserPlus, Users, GraduationCap, ClipboardList } from "lucide-react";
+import { prisma } from "@/lib/prisma";
 
 export default async function DashboardLayout({
   children,
@@ -17,6 +17,7 @@ export default async function DashboardLayout({
   }
 
   const role = session.user?.role;
+  const userEmail = session.user?.email;
 
   const userInitials = session.user?.name
     ?.split(" ")
@@ -24,10 +25,18 @@ export default async function DashboardLayout({
     .join("")
     .slice(0, 2)
     .toUpperCase();
-
+  const dbUser = await prisma.user.findUnique({
+  where: { id: Number(session.user.id) },
+  select: { image: true },
+});
   return (
     <div className="flex min-h-screen bg-background">
-      <MobileSidebar userInitials={userInitials}>
+      <MobileSidebar
+        userInitials={userInitials}
+        userName={session.user?.name ?? undefined}
+        userEmail={session.user?.email ?? undefined}
+        userImage={dbUser?.image}
+      >
         <div className="mb-3 px-3">
           <p className="text-xs uppercase text-muted-foreground tracking-wide">
             {role} Menu
@@ -60,10 +69,6 @@ export default async function DashboardLayout({
             </>
           )}
         </nav>
-
-        <div className="mt-auto px-3">
-          <LogoutButton />
-        </div>
       </MobileSidebar>
 
       <main className="flex-1 pt-14">{children}</main>

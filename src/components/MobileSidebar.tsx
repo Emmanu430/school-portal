@@ -2,13 +2,20 @@
     import { useState, useEffect } from "react";
     import { Menu, X, School, Bell } from "lucide-react";
     import { ThemeToggle } from "@/components/theme-toggle";
+    import { AccountMenu } from "@/components/AccountMenu";
 
     export default function MobileSidebar({
     children,
+    userName,
+    userEmail,
     userInitials,
+    userImage,
     }: {
     children: React.ReactNode;
+    userName?: string;
+    userEmail?: string;
     userInitials?: string;
+    userImage?: string | null;
     }) {
     const [isOpen, setIsOpen] = useState(false);
     const [isDesktop, setIsDesktop] = useState(false);
@@ -48,12 +55,10 @@
                 className="relative text-muted-foreground"
                 aria-label="Notifications"
             >
-                <Bell className="h-[18px] w-[18px]" />
+                <Bell className=" h-4.5 w-4.5" />
                 <span className="absolute -top-0.5 -right-0.5 h-1.5 w-1.5 rounded-full bg-accent" />
             </button>
-            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-accent text-accent-foreground text-xs font-semibold">
-                {userInitials ?? "?"}
-            </div>
+            <AccountMenu name={userName} email={userEmail} initials={userInitials} imageUrl={userImage}/>
             </div>
         </div>
 
