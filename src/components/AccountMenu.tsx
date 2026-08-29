@@ -55,10 +55,10 @@
                 <User className="h-4 w-4" />
                 Profile
             </Link>
-            <button className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-foreground hover:bg-secondary text-left">
+            <Link href="/dashboard/settings" className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-foreground hover:bg-secondary text-left">
                 <Settings className="h-4 w-4" />
                 Settings
-            </button>
+            </Link>
             <button onClick={() => signOut({ callbackUrl: "/login" })} className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-destructive hover:bg-secondary text-left border-t border-border">
                 <LogOut className="h-4 w-4" />
                 Log out

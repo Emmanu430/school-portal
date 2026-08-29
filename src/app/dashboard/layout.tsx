@@ -2,7 +2,7 @@ import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import MobileSidebar from "@/components/MobileSidebar";
 import { SidebarLink } from "@/components/Sidebarlink";
-import { LayoutDashboard, UserPlus, Users, GraduationCap, ClipboardList } from "lucide-react";
+import { LayoutDashboard, UserPlus, Users, GraduationCap, ClipboardList, Calendar } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 
 export default async function DashboardLayout({
@@ -58,6 +58,7 @@ export default async function DashboardLayout({
               <SidebarLink href="/dashboard/admin/classes" icon={<ClipboardList className="h-4 w-4" />} label="Manage Classes" />
               <SidebarLink href="/dashboard/admin/users/new" icon={<UserPlus className="h-4 w-4" />} label="Add Teacher" />
               <SidebarLink href="/dashboard/admin/teachers" icon={<GraduationCap className="h-4 w-4" />} label="Manage Teachers" />
+              <SidebarLink href="/dashboard/admin/events" icon={<Calendar className="h-4 w-4" />} label="Manage Events" />
             </>
           )}
 

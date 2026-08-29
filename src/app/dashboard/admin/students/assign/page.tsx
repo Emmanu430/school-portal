@@ -18,10 +18,7 @@
     const { success, error } = await searchParams;
 
     const unassignedUsers = await prisma.user.findMany({
-        where: {
-        role: "STUDENT",
-        student: null,
-        },
+        where: { role: "STUDENT", student: null },
     });
 
     const classes = await prisma.class.findMany({ orderBy: { name: "asc" } });
@@ -44,33 +41,29 @@
         }
 
         await prisma.student.create({
-        data: {
-            name: user.name,
-            email: user.email,
-            classId,
-            userId: user.id,
-        },
+        data: { name: user.name, email: user.email, classId, userId: user.id },
         });
 
         redirect("/dashboard/admin/students/assign?success=1");
     }
 
     return (
-        <main className="flex min-h-screen items-center justify-center bg-background">
+        <main className="min-h-screen bg-background p-5 sm:p-8 flex items-center justify-center">
         <form
             action={assignClass}
-            className="flex w-full max-w-sm flex-col gap-4 rounded-lg border border-border bg-card p-6"
+            className="flex w-full max-w-sm flex-col gap-4 rounded-2xl border border-border bg-card p-6"
         >
-            <h1 className="text-2xl font-bold text-foreground">Assign Class</h1>
+            <div>
+            <p className="text-xs text-primary font-medium">School directory</p>
+            <h1 className="mt-1 text-xl font-medium text-foreground">Assign class</h1>
+            </div>
 
             {success === "1" && (
-            <p className="text-sm text-primary">
-                Student assigned successfully.
-            </p>
+            <p className="text-xs text-emerald-600">Student assigned successfully.</p>
             )}
 
             {error === "exists" && (
-            <p className="text-sm text-destructive">
+            <p className="text-xs text-destructive">
                 A student record with this email already exists — edit it directly instead.
             </p>
             )}
@@ -81,20 +74,30 @@
             </p>
             ) : (
             <>
-                <FormSelect
-                name="userId"
-                placeholder="Select a student"
-                options={unassignedUsers.map((u) => ({
-                    value: String(u.id),
-                    label: `${u.name} (${u.email})`,
-                }))}
-                />
+                <div>
+                <label className="text-xs text-muted-foreground">Student</label>
+                <div className="mt-1">
+                    <FormSelect
+                    name="userId"
+                    placeholder="Select a student"
+                    options={unassignedUsers.map((u) => ({
+                        value: String(u.id),
+                        label: `${u.name} (${u.email})`,
+                    }))}
+                    />
+                </div>
+                </div>
 
-                <ClassSelect classes={classes} />
+                <div>
+                <label className="text-xs text-muted-foreground">Class</label>
+                <div className="mt-1">
+                    <ClassSelect classes={classes} />
+                </div>
+                </div>
 
                 <button
                 type="submit"
-                className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+                className="rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90"
                 >
                 Assign
                 </button>
