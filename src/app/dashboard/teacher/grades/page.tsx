@@ -2,6 +2,8 @@
     import { redirect } from "next/navigation";
     import { prisma } from "@/lib/prisma";
     import Link from "next/link";
+    import { ClipboardList } from "lucide-react";
+    import { GradesTable } from "@/components/GradesTable";
 
     export default async function TeacherGradesPage() {
     const session = await auth();
@@ -16,43 +18,36 @@
     });
 
     return (
-        <main className="flex min-h-screen flex-col items-center gap-6 py-16 bg-background">
-        <h1 className="text-3xl font-bold text-foreground">Grades</h1>
-
-        <Link
+        <main className="min-h-screen bg-background p-5 sm:p-8">
+        <div className="flex items-center justify-between gap-4">
+            <div>
+            <p className="text-xs text-primary font-medium">Teaching</p>
+            <h1 className="mt-1 text-2xl sm:text-3xl font-medium text-foreground">Grades</h1>
+            </div>
+            <Link
             href="/dashboard/teacher/grades/new"
-            className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
-        >
-            + Add Grade
-        </Link>
+            className="flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 whitespace-nowrap shrink-0"
+            >
+            <ClipboardList className="h-4 w-4" />
+            Add grade
+            </Link>
+        </div>
 
-        <table className="w-full max-w-2xl border-collapse">
-            <thead>
-            <tr className="border-b border-border text-left">
-                <th className="p-2 text-foreground">Student</th>
-                <th className="p-2 text-foreground">Subject</th>
-                <th className="p-2 text-foreground">Term</th>
-                <th className="p-2 text-foreground">Score</th>
-            </tr>
-            </thead>
-            <tbody>
-            {grades.map((grade) => (
-                <tr key={grade.id} className="border-b border-border">
-                <td className="p-2 text-foreground">{grade.student.name}</td>
-                <td className="p-2 text-muted-foreground">
-                    <Link
-                    href={`/dashboard/teacher/grades/${grade.id}/edit`}
-                    className="underline hover:text-foreground"
-                    >
-                    {grade.subject}
-                    </Link>
-                </td>
-                <td className="p-2 text-muted-foreground">{grade.term}</td>
-                <td className="p-2 text-muted-foreground">{grade.score}</td>
-                </tr>
-            ))}
-            </tbody>
-        </table>
+        <div className="mt-6 rounded-2xl border border-border bg-card p-4 sm:p-5">
+            <GradesTable
+            grades={grades.map((g) => ({
+                id: g.id,
+                studentName: g.student.name,
+                subject: g.subject,
+                term: g.term,
+                score: g.score,
+            }))}
+            />
+
+            {grades.length === 0 && (
+            <p className="mt-4 text-sm text-muted-foreground">No grades recorded yet.</p>
+            )}
+        </div>
         </main>
     );
 }

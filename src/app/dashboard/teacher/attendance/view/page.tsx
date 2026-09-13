@@ -2,6 +2,12 @@
     import { redirect } from "next/navigation";
     import { prisma } from "@/lib/prisma";
 
+    const statusStyles: Record<string, string> = {
+    PRESENT: "bg-primary/10 text-primary",
+    ABSENT: "bg-destructive/10 text-destructive",
+    LATE: "bg-accent/25 text-accent-foreground",
+    };
+
     export default async function ViewAttendancePage({
     searchParams,
     }: {
@@ -22,60 +28,50 @@
 
     const records = teacher?.classId
         ? await prisma.attendance.findMany({
-            where: {
-            date: new Date(selectedDate),
-            student: { classId: teacher.classId },
-            },
+            where: { date: new Date(selectedDate), student: { classId: teacher.classId } },
             include: { student: true },
             orderBy: { student: { name: "asc" } },
         })
         : [];
 
     return (
-        <main className="flex min-h-screen flex-col items-center gap-6 py-16 bg-background">
-        <h1 className="text-3xl font-bold text-foreground">View Attendance</h1>
+        <main className="min-h-screen bg-background p-5 sm:p-8">
+        <p className="text-xs text-primary font-medium">Teaching</p>
+        <h1 className="mt-1 text-2xl sm:text-3xl font-medium text-foreground">View attendance</h1>
 
-        <form method="GET" className="flex gap-2">
+        <form method="GET" className="mt-4 flex gap-2 max-w-sm">
             <input
             type="date"
             name="date"
             defaultValue={selectedDate}
-            className="rounded border border-border bg-input px-3 py-2 text-foreground [color-scheme:light] dark:[color-scheme:dark]"
+            className="flex-1 rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground [color-scheme:light] dark:[color-scheme:dark]"
             />
             <button
             type="submit"
-            className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+            className="rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 whitespace-nowrap"
             >
-            Load Date
+            Load date
             </button>
         </form>
 
-        {!teacher?.classId ? (
-            <p className="text-sm text-destructive">
-            You have no assigned class yet. Contact an admin.
-            </p>
-        ) : records.length === 0 ? (
-            <p className="text-sm text-muted-foreground">
-            No attendance recorded for this date yet.
-            </p>
-        ) : (
-            <table className="w-full max-w-md border-collapse">
-            <thead>
-                <tr className="border-b border-border text-left">
-                <th className="p-2 text-foreground">Student</th>
-                <th className="p-2 text-foreground">Status</th>
-                </tr>
-            </thead>
-            <tbody>
+        <div className="mt-6 max-w-md rounded-2xl border border-border bg-card p-4 sm:p-5">
+            {!teacher?.classId ? (
+            <p className="text-sm text-destructive">You have no assigned class yet. Contact an admin.</p>
+            ) : records.length === 0 ? (
+            <p className="text-sm text-muted-foreground">No attendance recorded for this date yet.</p>
+            ) : (
+            <div className="flex flex-col gap-1">
                 {records.map((record) => (
-                <tr key={record.id} className="border-b border-border">
-                    <td className="p-2 text-foreground">{record.student.name}</td>
-                    <td className="p-2 text-muted-foreground">{record.status}</td>
-                </tr>
+                <div key={record.id} className="flex items-center justify-between py-2 border-b border-border last:border-0">
+                    <span className="text-sm text-foreground">{record.student.name}</span>
+                    <span className={`text-xs font-medium rounded-full px-2.5 py-1 ${statusStyles[record.status] ?? "bg-muted text-muted-foreground"}`}>
+                    {record.status.charAt(0) + record.status.slice(1).toLowerCase()}
+                    </span>
+                </div>
                 ))}
-            </tbody>
-            </table>
-        )}
+            </div>
+            )}
+        </div>
         </main>
     );
 }

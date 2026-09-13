@@ -37,7 +37,6 @@
 
     async function markAttendance(formData: FormData) {
         "use server";
-
         const dateValue = formData.get("date") as string;
         const teacherRecord = await prisma.teacher.findUnique({
         where: { userId: Number(session!.user.id) },
@@ -48,12 +47,7 @@
         if (!status) continue;
 
         await prisma.attendance.upsert({
-            where: {
-            studentId_date: {
-                studentId: student.id,
-                date: new Date(dateValue),
-            },
-            },
+            where: { studentId_date: { studentId: student.id, date: new Date(dateValue) } },
             update: { status: status as "PRESENT" | "ABSENT" | "LATE", teacherId: teacherRecord?.id },
             create: {
             studentId: student.id,
@@ -68,53 +62,52 @@
     }
 
     return (
-        <main className="flex min-h-screen flex-col items-center gap-6 py-16 bg-background">
-        <h1 className="text-3xl font-bold text-foreground">Mark Attendance</h1>
+        <main className="min-h-screen bg-background p-5 sm:p-8">
+        <p className="text-xs text-primary font-medium">Teaching</p>
+        <h1 className="mt-1 text-2xl sm:text-3xl font-medium text-foreground">Mark attendance</h1>
 
         {success === "1" && (
-            <p className="text-sm text-primary">Attendance saved successfully.</p>
+            <p className="mt-2 text-xs text-emerald-600">Attendance saved successfully.</p>
         )}
 
-        <form method="GET" className="flex gap-2">
+        <form method="GET" className="mt-4 flex gap-2 max-w-sm">
             <input
             type="date"
             name="date"
             defaultValue={selectedDate}
-            className="rounded border border-border bg-input px-3 py-2 text-foreground [color-scheme:light] dark:[color-scheme:dark]"
+            className="flex-1 rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground [color-scheme:light] dark:[color-scheme:dark]"
             />
             <button
             type="submit"
-            className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+            className="rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 whitespace-nowrap"
             >
-            Load Date
+            Load date
             </button>
         </form>
 
         {!teacher?.classId ? (
-            <p className="text-sm text-destructive">
-            You have no assigned class yet. Contact an admin.
-            </p>
+            <p className="mt-6 text-sm text-destructive">You have no assigned class yet. Contact an admin.</p>
         ) : (
-            <form action={markAttendance} className="flex w-full max-w-md flex-col gap-4">
+            <form action={markAttendance} className="mt-6 max-w-md flex flex-col gap-4">
             <input type="hidden" name="date" value={selectedDate} />
 
-            <div className="rounded-lg border border-border bg-card p-4 flex flex-col gap-3">
+            <div className="rounded-2xl border border-border bg-card p-4 sm:p-5 flex flex-col gap-3">
                 {students.map((student) => {
                 const existing = existingRecords.find((r) => r.studentId === student.id);
                 return (
-                    <div key={student.id} className="flex items-center justify-between gap-2">
-                    <span className="text-foreground">{student.name}</span>
+                    <div key={student.id} className="flex items-center justify-between gap-3">
+                    <span className="text-sm text-foreground">{student.name}</span>
                     <div className="w-32">
                         <FormSelect
-                            name={`status-${student.id}`}
-                            defaultValue={existing?.status ?? "PRESENT"}
-                            options={[
+                        name={`status-${student.id}`}
+                        defaultValue={existing?.status ?? "PRESENT"}
+                        options={[
                             { value: "PRESENT", label: "Present" },
                             { value: "ABSENT", label: "Absent" },
                             { value: "LATE", label: "Late" },
-                            ]}
+                        ]}
                         />
-                        </div>
+                    </div>
                     </div>
                 );
                 })}
@@ -122,9 +115,9 @@
 
             <button
                 type="submit"
-                className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+                className="rounded-full bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 self-start"
             >
-                Save Attendance
+                Save attendance
             </button>
             </form>
         )}

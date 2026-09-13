@@ -32,81 +32,81 @@
 
     async function updateGrade(formData: FormData) {
         "use server";
-
         const subject = formData.get("subject") as string;
         const term = formData.get("term") as string;
         const score = Number(formData.get("score"));
-
-        await prisma.grade.update({
-        where: { id: Number(id) },
-        data: { subject, term, score },
-        });
-
+        await prisma.grade.update({ where: { id: Number(id) }, data: { subject, term, score } });
         redirect("/dashboard/teacher/grades");
     }
 
     async function deleteGrade() {
         "use server";
-
-        await prisma.grade.delete({
-        where: { id: Number(id) },
-        });
-
+        await prisma.grade.delete({ where: { id: Number(id) } });
         redirect("/dashboard/teacher/grades");
     }
 
     return (
-        <main className="flex min-h-screen items-center justify-center bg-background">
+        <main className="min-h-screen bg-background p-5 sm:p-8 flex items-center justify-center">
         <div className="flex w-full max-w-sm flex-col gap-4">
             <form
             action={updateGrade}
-            className="flex flex-col gap-4 rounded-lg border border-border bg-card p-6"
+            className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-6"
             >
-            <h1 className="text-2xl font-bold text-foreground">Edit Grade</h1>
-            <p className="text-sm text-muted-foreground -mt-2">
-                Student: {grade.student.name}
-            </p>
+            <div>
+                <p className="text-xs text-primary font-medium">Teaching</p>
+                <h1 className="mt-1 text-xl font-medium text-foreground">Edit grade</h1>
+                <p className="text-xs text-muted-foreground mt-1">Student: {grade.student.name}</p>
+            </div>
 
-            <input
+            <div>
+                <label className="text-xs text-muted-foreground">Subject</label>
+                <input
                 type="text"
                 name="subject"
                 defaultValue={grade.subject}
-                className="rounded border border-border bg-input px-3 py-2 text-foreground"
+                className="mt-1 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground"
                 required
-            />
+                />
+            </div>
 
-            <input
+            <div>
+                <label className="text-xs text-muted-foreground">Term</label>
+                <input
                 type="text"
                 name="term"
                 defaultValue={grade.term}
-                className="rounded border border-border bg-input px-3 py-2 text-foreground"
+                className="mt-1 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground"
                 required
-            />
+                />
+            </div>
 
-            <input
+            <div>
+                <label className="text-xs text-muted-foreground">Score (0–100)</label>
+                <input
                 type="number"
                 name="score"
                 defaultValue={grade.score}
                 min={0}
                 max={100}
-                className="rounded border border-border bg-input px-3 py-2 text-foreground"
+                className="mt-1 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground"
                 required
-            />
+                />
+            </div>
 
             <button
                 type="submit"
-                className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+                className="rounded-full bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90"
             >
-                Save Changes
+                Save changes
             </button>
             </form>
 
             <form action={deleteGrade}>
             <button
                 type="submit"
-                className="w-full rounded-md bg-destructive px-4 py-2 text-sm font-medium text-destructive-foreground hover:bg-destructive/90"
+                className="w-full rounded-full bg-destructive px-4 py-2.5 text-sm font-medium text-destructive-foreground hover:bg-destructive/90"
             >
-                Delete Grade
+                Delete grade
             </button>
             </form>
         </div>
